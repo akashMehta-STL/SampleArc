@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dot_height">20dp</dimen>
-    <dimen name="dot_weight">20dp</dimen>
-    <dimen name="dot_padding_top">3dp</dimen>
-    <dimen name="dot_padding_bottom">3dp</dimen>
-    <dimen name="dot_padding_start">3dp</dimen>
-    <dimen name="dot_padding_end">3dp</dimen>
+    <dimen name="dot_height">12dp</dimen>
+    <dimen name="dot_weight">12dp</dimen>
+    <dimen name="dot_padding_top">1.5dp</dimen>
+    <dimen name="dot_padding_bottom">1.5dp</dimen>
+    <dimen name="dot_padding_start">1.5dp</dimen>
+    <dimen name="dot_padding_end">1.5dp</dimen>
+    <dimen name="seekarc_padding">15dp</dimen>
 </resources>

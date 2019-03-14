@@ -69,12 +69,12 @@ public class SeekArc extends View {
     /**
      * The width of the progress line for this SeekArc
      */
-    private int mProgressWidth = 4;
+    private int mProgressWidth = 6;
 
     /**
      * The Width of the background arc for the SeekArc
      */
-    private int mArcWidth = 2;
+    private int mArcWidth = 11;
 
     /**
      * The Angle to start drawing this Arc from
@@ -94,7 +94,7 @@ public class SeekArc extends View {
     /**
      * Give the SeekArc rounded edges
      */
-    private boolean mRoundedEdges = false;
+    private boolean mRoundedEdges = true;
 
     /**
      * Enable touch inside the SeekArc
@@ -216,9 +216,10 @@ public class SeekArc extends View {
                     R.styleable.SeekArc_progressWidth, mProgressWidth);
             mArcWidth = (int) a.getDimension(R.styleable.SeekArc_arcWidth,
                     mArcWidth);
+
             mStartAngle = a.getInt(R.styleable.SeekArc_startAngle, mStartAngle);
-            mSweepAngle = a.getInt(R.styleable.SeekArc_sweepAngle, mSweepAngle);
-            mRotation = a.getInt(R.styleable.SeekArc_rotation, mRotation);
+            mSweepAngle = a.getInt(R.styleable.SeekArc_sweepAngle, getSweepAngle());
+            mRotation = a.getInt(R.styleable.SeekArc_rotation, getArcRotation());
             mRoundedEdges = a.getBoolean(R.styleable.SeekArc_roundEdges,
                     mRoundedEdges);
             mTouchInside = a.getBoolean(R.styleable.SeekArc_touchInside,
@@ -236,10 +237,10 @@ public class SeekArc extends View {
         mProgress = (mProgress > mMax) ? mMax : mProgress;
         mProgress = (mProgress < 0) ? 0 : mProgress;
 
-        mSweepAngle = (mSweepAngle > 360) ? 360 : mSweepAngle;
-        mSweepAngle = (mSweepAngle < 0) ? 0 : mSweepAngle;
+        mSweepAngle = (getSweepAngle() > 360) ? 360 : getSweepAngle();
+        mSweepAngle = (getSweepAngle() < 0) ? 0 : getSweepAngle();
 
-        mProgressSweep = (float) mProgress / mMax * mSweepAngle;
+        mProgressSweep = (float) mProgress / mMax * getSweepAngle();
 
         mStartAngle = (mStartAngle > 360) ? 0 : mStartAngle;
         mStartAngle = (mStartAngle < 0) ? 0 : mStartAngle;
@@ -256,13 +257,13 @@ public class SeekArc extends View {
         progressPaint[2] = setupPaint(2);
         progressPaint[3] = setupPaint(3);
 
-        if (mRoundedEdges) {
-            mArcPaint.setStrokeCap(Paint.Cap.ROUND);
-            progressPaint[0].setStrokeCap(Paint.Cap.ROUND);
-            progressPaint[1].setStrokeCap(Paint.Cap.ROUND);
-            progressPaint[2].setStrokeCap(Paint.Cap.ROUND);
-            progressPaint[3].setStrokeCap(Paint.Cap.ROUND);
-        }
+        mArcPaint.setStrokeCap(Paint.Cap.ROUND);
+        progressPaint[0].setStrokeCap(Paint.Cap.ROUND);
+        progressPaint[1].setStrokeCap(Paint.Cap.ROUND);
+        progressPaint[2].setStrokeCap(Paint.Cap.ROUND);
+        progressPaint[3].setStrokeCap(Paint.Cap.ROUND);
+        setProgressWidth(mProgressWidth);
+        setArcWidth(mArcWidth);
     }
 
     public void setRangesAr(int[] rangesAr) {
@@ -291,8 +292,8 @@ public class SeekArc extends View {
             canvas.scale(-1, 1, mArcRect.centerX(), mArcRect.centerY());
         }
         // Draw the arcs
-        final int arcStart = mStartAngle + mAngleOffset + mRotation;
-        final int arcSweep = mSweepAngle;
+        final int arcStart = mStartAngle + mAngleOffset + getArcRotation();
+        final int arcSweep = getSweepAngle();
 
         divideArc(canvas, (int) (arcStart + mProgressSweep));
         canvas.drawArc(mArcRect, arcStart + mProgressSweep, arcSweep - mProgressSweep, false,
@@ -329,8 +330,8 @@ public class SeekArc extends View {
 
     private void setupThumb() {
         for (int i = 0; i < rangesAr.length; i++) {
-            if ( i < (rangesAr.length - 1)) {
-                if (mProgressSweep <= rangesAr[i+1]) {
+            if (i < (rangesAr.length - 1)) {
+                if (mProgressSweep <= rangesAr[i + 1]) {
                     mThumb = rangesDrawableAr[i];
                     break;
                 }
@@ -347,7 +348,7 @@ public class SeekArc extends View {
     }
 
     private int withThreshold(int value) {
-        return value + 120;
+        return value + 120 + 15;
     }
 
     @Override
@@ -371,7 +372,7 @@ public class SeekArc extends View {
         left = width / 2 - (arcDiameter / 2);
         mArcRect.set(left, top, left + arcDiameter, top + arcDiameter);
 
-        int arcStart = (int) mProgressSweep + mStartAngle + mRotation + 90;
+        int arcStart = (int) mProgressSweep + mStartAngle + getArcRotation() + 90;
         mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart)));
         mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
 
@@ -460,7 +461,7 @@ public class SeekArc extends View {
         x = (mClockwise) ? x : -x;
         // convert to arc Angle
         double angle = Math.toDegrees(Math.atan2(y, x) + (Math.PI / 2)
-                - Math.toRadians(mRotation));
+                - Math.toRadians(getArcRotation()));
         if (angle < 0) {
             angle = 360 + angle;
         }
@@ -479,7 +480,7 @@ public class SeekArc extends View {
     }
 
     private float valuePerDegree() {
-        return (float) mMax / mSweepAngle;
+        return (float) mMax / getSweepAngle();
     }
 
     private void onProgressRefresh(int progress, boolean fromUser) {
@@ -487,7 +488,7 @@ public class SeekArc extends View {
     }
 
     private void updateThumbPosition() {
-        int thumbAngle = (int) (mStartAngle + mProgressSweep + mRotation + 90);
+        int thumbAngle = (int) (mStartAngle + mProgressSweep + getArcRotation() + 90);
         mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(thumbAngle)));
         mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
     }
@@ -507,7 +508,7 @@ public class SeekArc extends View {
                     .onProgressChanged(this, progress, fromUser);
         }
 
-        mProgressSweep = (float) progress / mMax * mSweepAngle;
+        mProgressSweep = (float) progress / mMax * getSweepAngle();
 
         updateThumbPosition();
 
@@ -556,7 +557,7 @@ public class SeekArc extends View {
     }
 
     public int getArcRotation() {
-        return mRotation;
+        return mRotation + 15;
     }
 
     public void setArcRotation(int mRotation) {
@@ -574,23 +575,12 @@ public class SeekArc extends View {
     }
 
     public int getSweepAngle() {
-        return mSweepAngle;
+        return mSweepAngle - 9;
     }
 
     public void setSweepAngle(int mSweepAngle) {
         this.mSweepAngle = mSweepAngle;
         updateThumbPosition();
-    }
-
-    public void setRoundedEdges(boolean isEnabled) {
-        mRoundedEdges = isEnabled;
-        if (mRoundedEdges) {
-            mArcPaint.setStrokeCap(Paint.Cap.ROUND);
-            progressPaint[0].setStrokeCap(Paint.Cap.ROUND);
-        } else {
-            mArcPaint.setStrokeCap(Paint.Cap.SQUARE);
-            progressPaint[0].setStrokeCap(Paint.Cap.SQUARE);
-        }
     }
 
     public void setTouchInSide(boolean isEnabled) {
@@ -604,14 +594,6 @@ public class SeekArc extends View {
             mTouchIgnoreRadius = mArcRadius
                     - Math.min(thumbHalfWidth, thumbHalfheight);
         }
-    }
-
-    public void setClockwise(boolean isClockwise) {
-        mClockwise = isClockwise;
-    }
-
-    public boolean isClockwise() {
-        return mClockwise;
     }
 
     public boolean isEnabled() {
