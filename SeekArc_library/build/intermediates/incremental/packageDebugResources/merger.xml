@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res"/><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/build/generated/res/rs/debug"/><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res"><file path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/values/colors.xml" qualifiers=""><color name="progress_gray">#33000000</color><color name="progress_gray_dark">#FF383838</color><color name="default_blue_light">#ff33b5e5</color><color name="red">#ffe2231a</color><color name="dot_color_blue">#16a4fa</color><color name="dot_color_orange">#f48918</color><color name="dot_color_red">#fe5965</color><color name="dot_color_green">#44dc91</color></file><file path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/values/styles.xml" qualifiers=""><style name="SeekArc">
+        <item name="arcColor">@color/progress_gray_dark</item>
+    </style><style name="SeekArcLight">
+        <item name="arcColor">@color/progress_gray</item>
+    </style></file><file path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/values/attrs.xml" qualifiers=""><declare-styleable name="SeekArc">
+        <attr format="reference" name="thumb"/>
+        <attr format="dimension" name="thumbOffset"/>
+        <attr format="integer" name="max"/>
+        <attr format="dimension" name="progressWidth"/>
+        <attr format="dimension" name="arcWidth"/>
+        <attr format="integer" name="progress"/>
+        <attr format="integer" name="rotation"/>
+        <attr format="integer" name="startAngle"/>
+        <attr format="integer" name="sweepAngle"/>
+        <attr format="color" name="arcColor"/>
+        <attr format="color" name="progressColor"/>
+        <attr format="boolean" name="roundEdges"/>
+        <attr format="boolean" name="touchInside"/>
+        <attr format="boolean" name="clockwise"/>
+        <attr format="boolean" name="enabled"/>
+    </declare-styleable><declare-styleable name="SeekArcTheme">
+        <attr format="reference" name="seekArcStyle"/>        
+    </declare-styleable></file><file path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/values/strings.xml" qualifiers=""><string name="app_name">Seekarc_library</string></file><file name="ic_launcher" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-mdpi/ic_launcher.png" qualifiers="mdpi-v4" type="drawable"/><file name="ic_launcher" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-xhdpi/ic_launcher.png" qualifiers="xhdpi-v4" type="drawable"/><file name="scrubber_control_normal_holo" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-xhdpi/scrubber_control_normal_holo.png" qualifiers="xhdpi-v4" type="drawable"/><file name="scrubber_control_disabled_holo" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-xhdpi/scrubber_control_disabled_holo.png" qualifiers="xhdpi-v4" type="drawable"/><file name="scrubber_control_focused_holo" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-xhdpi/scrubber_control_focused_holo.png" qualifiers="xhdpi-v4" type="drawable"/><file name="scrubber_control_pressed_holo" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-xhdpi/scrubber_control_pressed_holo.png" qualifiers="xhdpi-v4" type="drawable"/><file name="seek_arc_control_selector" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable/seek_arc_control_selector.xml" qualifiers="" type="drawable"/><file name="ic_launcher" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable-hdpi/ic_launcher.png" qualifiers="hdpi-v4" type="drawable"/><file name="red_dot" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable/red_dot.xml" qualifiers="" type="drawable"/><file name="blue_dot" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable/blue_dot.xml" qualifiers="" type="drawable"/><file name="orange_dot" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable/orange_dot.xml" qualifiers="" type="drawable"/><file name="green_dot" path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/drawable/green_dot.xml" qualifiers="" type="drawable"/><file path="/home/stllpt031/Projects/SampleArc/SeekArc_library/res/values/dimens.xml" qualifiers=""><dimen name="dot_height">20dp</dimen><dimen name="dot_weight">20dp</dimen><dimen name="dot_padding_top">3dp</dimen><dimen name="dot_padding_bottom">3dp</dimen><dimen name="dot_padding_start">3dp</dimen><dimen name="dot_padding_end">3dp</dimen></file></source><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/build/generated/res/rs/debug"/><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/home/stllpt031/Projects/SampleArc/SeekArc_library/src/debug/res"/></dataSet><mergedItems><configuration qualifiers=""><declare-styleable name="SeekArc">
+        <attr format="reference" name="thumb"/>
+        <attr format="dimension" name="thumbOffset"/>
+        <attr format="integer" name="max"/>
+        <attr format="dimension" name="progressWidth"/>
+        <attr format="dimension" name="arcWidth"/>
+        <attr format="integer" name="progress"/>
+        <attr format="integer" name="rotation"/>
+        <attr format="integer" name="startAngle"/>
+        <attr format="integer" name="sweepAngle"/>
+        <attr format="color" name="arcColor"/>
+        <attr format="color" name="progressColor"/>
+        <attr format="boolean" name="roundEdges"/>
+        <attr format="boolean" name="touchInside"/>
+        <attr format="boolean" name="clockwise"/>
+        <attr format="boolean" name="enabled"/>
+    </declare-styleable><declare-styleable name="SeekArcTheme">
+        <attr format="reference" name="seekArcStyle"/>        
+    </declare-styleable></configuration></mergedItems></merger>

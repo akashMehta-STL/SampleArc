@@ -1,0 +1,45 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:1-36:12
+	package
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:25:5-38
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+	android:versionName
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:27:5-30
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:24:11-69
+	android:versionCode
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:26:5-28
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+application
+ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:29:5-34:19
+	android:label
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:32:9-41
+	android:icon
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:31:9-45
+	android:allowBackup
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml:30:9-35
+uses-sdk
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		ADDED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml
+		INJECTED from /home/stllpt031/Projects/SampleArc/SeekArc_library/AndroidManifest.xml

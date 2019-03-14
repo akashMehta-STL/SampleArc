@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="default_blue_light">#ff33b5e5</color>
+    <color name="dot_color_blue">#16a4fa</color>
+    <color name="dot_color_green">#44dc91</color>
+    <color name="dot_color_orange">#f48918</color>
+    <color name="dot_color_red">#fe5965</color>
+    <color name="progress_gray">#33000000</color>
+    <color name="progress_gray_dark">#FF383838</color>
+    <color name="red">#ffe2231a</color>
+    <dimen name="dot_height">20dp</dimen>
+    <dimen name="dot_padding_bottom">3dp</dimen>
+    <dimen name="dot_padding_end">3dp</dimen>
+    <dimen name="dot_padding_start">3dp</dimen>
+    <dimen name="dot_padding_top">3dp</dimen>
+    <dimen name="dot_weight">20dp</dimen>
+    <string name="app_name">Seekarc_library</string>
+    <style name="SeekArc">
+        <item name="arcColor">@color/progress_gray_dark</item>
+    </style>
+    <style name="SeekArcLight">
+        <item name="arcColor">@color/progress_gray</item>
+    </style>
+    <declare-styleable name="SeekArc">
+        <attr format="reference" name="thumb"/>
+        <attr format="dimension" name="thumbOffset"/>
+        <attr format="integer" name="max"/>
+        <attr format="dimension" name="progressWidth"/>
+        <attr format="dimension" name="arcWidth"/>
+        <attr format="integer" name="progress"/>
+        <attr format="integer" name="rotation"/>
+        <attr format="integer" name="startAngle"/>
+        <attr format="integer" name="sweepAngle"/>
+        <attr format="color" name="arcColor"/>
+        <attr format="color" name="progressColor"/>
+        <attr format="boolean" name="roundEdges"/>
+        <attr format="boolean" name="touchInside"/>
+        <attr format="boolean" name="clockwise"/>
+        <attr format="boolean" name="enabled"/>
+    </declare-styleable>
+    <declare-styleable name="SeekArcTheme">
+        <attr format="reference" name="seekArcStyle"/>        
+    </declare-styleable>
+</resources>

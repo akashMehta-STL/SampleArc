@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:tools="http://schemas.android.com/tools"
+            xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:height="@dimen/dot_height"
+          android:width="@dimen/dot_weight">
+        <shape android:shape="oval">
+            <gradient android:startColor="@color/progress_gray"
+                      android:centerColor="@color/progress_gray"
+                      android:endColor="@color/progress_gray"/>
+
+        </shape>
+    </item>
+    <item android:start="@dimen/dot_padding_start"
+          android:top="@dimen/dot_padding_top"
+          android:end="@dimen/dot_padding_end"
+          android:bottom="@dimen/dot_padding_bottom" tools:ignore="UnusedAttribute">
+        <shape android:shape="oval">
+            <gradient android:startColor="@color/dot_color_orange"
+                      android:centerColor="@color/dot_color_orange"
+                      android:endColor="@color/dot_color_orange"/>
+        </shape>
+    </item>
+</layer-list>
