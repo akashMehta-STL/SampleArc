@@ -48,8 +48,9 @@ public class SeekArc extends View {
 
     private static final String TAG = SeekArc.class.getSimpleName();
     private static int INVALID_PROGRESS_VALUE = -1;
-    // The initial rotational offset -90 means we start at 12 o'clock
-    private final int mAngleOffset = -90;
+
+    // TODO Mange other values according to this total range.
+    private final int TOTAL_RANGE = 273;
 
     /**
      * The Drawable for the seek arc thumbnail
@@ -119,23 +120,29 @@ public class SeekArc extends View {
     private Paint mArcPaint;
 
     Paint[] progressPaint = new Paint[4];
-    int[] progressColorAr = new int[4];
 
-    private int[] rangesAr = new int[]{0, 75, 150, 225};
+    /**
+     * Here we will provide ranges values for gauge meter.
+     */
+    private float[] rangesAr = new float[]{0, 68.25f, 136.5f, 204.75f};
+    /**
+     * Here we will provide the colors according to gauge meter range.
+     */
     private int[] rangesColorAr = new int[]{getResources().getColor(R.color.dot_color_red),
             getResources().getColor(R.color.dot_color_blue),
             getResources().getColor(R.color.dot_color_green),
             getResources().getColor(R.color.dot_color_orange)};
+    /**
+     * Here we will provide drawable icon for particular range.
+     */
     private Drawable[] rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.red_dot),
             getResources().getDrawable(R.drawable.blue_dot),
             getResources().getDrawable(R.drawable.green_dot),
             getResources().getDrawable(R.drawable.orange_dot)};
-    private int threshold;
     private int mTranslateX;
     private int mTranslateY;
     private int mThumbXPos;
     private int mThumbYPos;
-    private double mTouchAngle;
     private float mTouchIgnoreRadius;
     private OnSeekArcChangeListener mOnSeekArcChangeListener;
 
@@ -195,12 +202,6 @@ public class SeekArc extends View {
 
         // Defaults, may need to link this into theme settings
         int arcColor = res.getColor(R.color.progress_gray);
-        progressColorAr[0] = Color.parseColor("#fe5965");
-        progressColorAr[1] = Color.parseColor("#16a4fa");
-        progressColorAr[2] = Color.parseColor("#44dc91");
-        progressColorAr[3] = Color.parseColor("#f48918");
-        int thumbHalfheight = 0;
-        int thumbHalfWidth = 0;
         mThumb = res.getDrawable(R.drawable.seek_arc_control_selector);
         // Convert progress width to pixels for current density
         mProgressWidth = (int) (mProgressWidth * density);
@@ -229,8 +230,6 @@ public class SeekArc extends View {
             mEnabled = a.getBoolean(R.styleable.SeekArc_enabled, mEnabled);
 
             arcColor = a.getColor(R.styleable.SeekArc_arcColor, arcColor);
-            progressColorAr[0] = a.getColor(R.styleable.SeekArc_progressColor,
-                    progressColorAr[0]);
             a.recycle();
         }
 
@@ -266,10 +265,6 @@ public class SeekArc extends View {
         setArcWidth(mArcWidth);
     }
 
-    public void setRangesAr(int[] rangesAr) {
-        this.rangesAr = rangesAr;
-    }
-
     private Paint setupPaint(int i) {
         Paint paint = new Paint();
         paint.setColor(rangesColorAr[i]);
@@ -279,19 +274,14 @@ public class SeekArc extends View {
         return paint;
     }
 
-    /**
-     * Set dynamic pointer as per range.
-     */
-    private void setThumb() {
-
-    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         if (!mClockwise) {
             canvas.scale(-1, 1, mArcRect.centerX(), mArcRect.centerY());
         }
         // Draw the arcs
+        // The initial rotational offset -90 means we start at 12 o'clock
+        int mAngleOffset = -90;
         final int arcStart = mStartAngle + mAngleOffset + getArcRotation();
         final int arcSweep = getSweepAngle();
 
@@ -347,8 +337,8 @@ public class SeekArc extends View {
                 thumbHalfheight);
     }
 
-    private int withThreshold(int value) {
-        return value + 120 + 15;
+    private float withThreshold(float value) {
+        return value + 120f + 15f;
     }
 
     @Override
@@ -437,7 +427,7 @@ public class SeekArc extends View {
             return;
         }
         setPressed(true);
-        mTouchAngle = getTouchDegrees(event.getX(), event.getY());
+        double mTouchAngle = getTouchDegrees(event.getX(), event.getY());
         int progress = getProgressForAngle(mTouchAngle);
         onProgressRefresh(progress, true);
     }
@@ -547,10 +537,6 @@ public class SeekArc extends View {
         if (progressPaint.length >= 4) progressPaint[3].setStrokeWidth(mProgressWidth);
     }
 
-    public int getArcWidth() {
-        return mArcWidth;
-    }
-
     public void setArcWidth(int mArcWidth) {
         this.mArcWidth = mArcWidth;
         mArcPaint.setStrokeWidth(mArcWidth);
@@ -560,27 +546,8 @@ public class SeekArc extends View {
         return mRotation + 15;
     }
 
-    public void setArcRotation(int mRotation) {
-        this.mRotation = mRotation;
-        updateThumbPosition();
-    }
-
-    public int getStartAngle() {
-        return mStartAngle;
-    }
-
-    public void setStartAngle(int mStartAngle) {
-        this.mStartAngle = mStartAngle;
-        updateThumbPosition();
-    }
-
     public int getSweepAngle() {
         return mSweepAngle - 9;
-    }
-
-    public void setSweepAngle(int mSweepAngle) {
-        this.mSweepAngle = mSweepAngle;
-        updateThumbPosition();
     }
 
     public void setTouchInSide(boolean isEnabled) {
@@ -602,31 +569,5 @@ public class SeekArc extends View {
 
     public void setEnabled(boolean enabled) {
         this.mEnabled = enabled;
-    }
-
-    public int getProgressColor() {
-        return progressPaint[0].getColor();
-    }
-
-    public void setProgressColor(int color) {
-        progressPaint[0].setColor(color);
-        invalidate();
-    }
-
-    public int getArcColor() {
-        return mArcPaint.getColor();
-    }
-
-    public void setArcColor(int color) {
-        mArcPaint.setColor(color);
-        invalidate();
-    }
-
-    public int getMax() {
-        return mMax;
-    }
-
-    public void setMax(int mMax) {
-        this.mMax = mMax;
     }
 }

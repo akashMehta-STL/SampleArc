@@ -43,11 +43,8 @@
                 android:layout_gravity="center"
                 android:padding="@dimen/seekarc_padding"
                 seekarc:max="150"
-                seekarc:progressColor="@color/red"
                 seekarc:rotation="180"
                 seekarc:startAngle="30"
-                seekarc:sweepAngle="300"
-                seekarc:thumb="@drawable/custom_seek_arc_control_selector"
-                seekarc:touchInside="true"/>
+                seekarc:sweepAngle="300"/>
     </FrameLayout>
 </LinearLayout>
