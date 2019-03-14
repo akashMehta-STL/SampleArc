@@ -124,7 +124,8 @@ public class SeekArc extends View {
     /**
      * Here we will provide ranges values for gauge meter.
      */
-    private float[] rangesAr = new float[]{0, 68.25f, 136.5f, 204.75f};
+    private float[] seekBarRangesAr= new float[]{0, 68.25f, 136.5f, 204.75f};
+
     /**
      * Here we will provide the colors according to gauge meter range.
      */
@@ -132,6 +133,7 @@ public class SeekArc extends View {
             getResources().getColor(R.color.dot_color_blue),
             getResources().getColor(R.color.dot_color_green),
             getResources().getColor(R.color.dot_color_orange)};
+
     /**
      * Here we will provide drawable icon for particular range.
      */
@@ -145,6 +147,32 @@ public class SeekArc extends View {
     private int mThumbYPos;
     private float mTouchIgnoreRadius;
     private OnSeekArcChangeListener mOnSeekArcChangeListener;
+
+    /**
+     * set gauge meter ranges
+     * @param rangesAr
+     */
+    public void setRangesAr(float[] rangesAr) {
+        this.seekBarRangesAr = new float[rangesAr.length + 1];
+        seekBarRangesAr[0] = 1;
+        System.arraycopy(rangesAr, 0, seekBarRangesAr, 1, rangesAr.length);
+    }
+
+    /**
+     * set gauge meter ranges colors.
+     * @param rangesColorAr
+     */
+    public void setRangesColorAr(int[] rangesColorAr) {
+        this.rangesColorAr = rangesColorAr;
+        progressPaint[0] = setupPaint(0);
+        progressPaint[1] = setupPaint(1);
+        progressPaint[2] = setupPaint(2);
+        progressPaint[3] = setupPaint(3);
+    }
+
+    public void setRangesDrawableAr(Drawable[] rangesDrawableAr) {
+        this.rangesDrawableAr = rangesDrawableAr;
+    }
 
     public interface OnSeekArcChangeListener {
 
@@ -257,10 +285,6 @@ public class SeekArc extends View {
         progressPaint[3] = setupPaint(3);
 
         mArcPaint.setStrokeCap(Paint.Cap.ROUND);
-        progressPaint[0].setStrokeCap(Paint.Cap.ROUND);
-        progressPaint[1].setStrokeCap(Paint.Cap.ROUND);
-        progressPaint[2].setStrokeCap(Paint.Cap.ROUND);
-        progressPaint[3].setStrokeCap(Paint.Cap.ROUND);
         setProgressWidth(mProgressWidth);
         setArcWidth(mArcWidth);
     }
@@ -271,6 +295,7 @@ public class SeekArc extends View {
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(mProgressWidth);
+        paint.setStrokeCap(Paint.Cap.ROUND);
         return paint;
     }
 
@@ -298,11 +323,11 @@ public class SeekArc extends View {
 
     private void divideArc(Canvas canvas, int max) {
         setupThumb();
-        for (int i = 0; i < rangesAr.length; i++) {
-            if (i < rangesAr.length - 1) {
-                if (max <= withThreshold(rangesAr[i + 1])) {
+        for (int i = 0; i < seekBarRangesAr.length; i++) {
+            if (i < seekBarRangesAr.length - 1) {
+                if (max <= withThreshold(seekBarRangesAr[i + 1])) {
                     for (int j = 0; j < i + 1; j++) {
-                        canvas.drawArc(mArcRect, withThreshold(rangesAr[j]), max - withThreshold(rangesAr[j]), false,
+                        canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[j]), max - withThreshold(seekBarRangesAr[j]), false,
                                 progressPaint[j]);
                     }
                     break;
@@ -310,7 +335,7 @@ public class SeekArc extends View {
 
             } else {
                 for (int j = 0; j < i + 1; j++) {
-                    canvas.drawArc(mArcRect, withThreshold(rangesAr[j]), max - withThreshold(rangesAr[j]), false,
+                    canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[j]), max - withThreshold(seekBarRangesAr[j]), false,
                             progressPaint[j]);
                 }
                 break;
@@ -319,9 +344,9 @@ public class SeekArc extends View {
     }
 
     private void setupThumb() {
-        for (int i = 0; i < rangesAr.length; i++) {
-            if (i < (rangesAr.length - 1)) {
-                if (mProgressSweep <= rangesAr[i + 1]) {
+        for (int i = 0; i < seekBarRangesAr.length; i++) {
+            if (i < (seekBarRangesAr.length - 1)) {
+                if (mProgressSweep <= seekBarRangesAr[i + 1]) {
                     mThumb = rangesDrawableAr[i];
                     break;
                 }

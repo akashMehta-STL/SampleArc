@@ -24,6 +24,7 @@
 package aakash.com.samplearc;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -55,6 +56,20 @@ public class SimpleActivity extends Activity {
 		setContentView(getLayoutFile());
 
 		mSeekArc = (SeekArc) findViewById(R.id.seekArc);
+		mSeekArc.setProgress(273);
+		mSeekArc.setRangesAr(new float[]{60, 150});
+		mSeekArc.setRangesColorAr(new int[] {
+				getResources().getColor(R.color.dot_color_green),
+				getResources().getColor(R.color.dot_color_orange),
+				getResources().getColor(R.color.dot_color_red),
+				getResources().getColor(R.color.dot_color_blue)
+		});
+		mSeekArc.setRangesDrawableAr(new Drawable[] {
+				getResources().getDrawable(R.drawable.green_dot),
+				getResources().getDrawable(R.drawable.orange_dot),
+				getResources().getDrawable(R.drawable.red_dot),
+				getResources().getDrawable(R.drawable.blue_dot)
+		});
 		int value = getResources().getDisplayMetrics().widthPixels/3;
 
 		ViewGroup.LayoutParams params = mSeekArc.getLayoutParams();
