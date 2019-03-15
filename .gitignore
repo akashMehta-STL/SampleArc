@@ -3,6 +3,7 @@
 /local.properties
 .DS_Store
 /build
+/SeekArc_library/build
 /captures
 .externalNativeBuild
 /.idea
