@@ -151,12 +151,15 @@ public class SeekArc extends View {
     /**
      * set gauge meter ranges
      *
-     * @param rangesAr
+     * @param rangesCount
      */
-    public void setRangesAr(float[] rangesAr) {
-        this.seekBarRangesAr = new float[rangesAr.length + 1];
+    public void setRangesAr(int rangesCount) {
+        this.seekBarRangesAr = new float[rangesCount];
         seekBarRangesAr[0] = 1;
-        System.arraycopy(rangesAr, 0, seekBarRangesAr, 1, rangesAr.length);
+        int threshold = TOTAL_RANGE/rangesCount;
+        for (int i = 1; i < rangesCount; i++) {
+            seekBarRangesAr[i] = i * threshold;
+        }
     }
 
     /**
@@ -379,7 +382,7 @@ public class SeekArc extends View {
     }
 
     private float withThreshold(float value) {
-        return value + 120f + 15f;
+        return value + 135f;
     }
 
     @Override
