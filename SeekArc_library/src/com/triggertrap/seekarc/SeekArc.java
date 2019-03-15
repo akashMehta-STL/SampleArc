@@ -50,6 +50,7 @@ public class SeekArc extends View {
 
     // TODO Mange other values according to this total range.
     private final int TOTAL_RANGE = 273;
+    private final int partitionThreshold = 8;
 
     /**
      * The Drawable for the seek arc thumbnail
@@ -123,7 +124,7 @@ public class SeekArc extends View {
     /**
      * Here we will provide ranges values for gauge meter.
      */
-    private float[] seekBarRangesAr= new float[]{0, 68.25f, 136.5f, 204.75f};
+    private float[] seekBarRangesAr = new float[]{0, 68.25f, 136.5f, 204.75f};
 
     /**
      * Here we will provide the colors according to gauge meter range.
@@ -149,6 +150,7 @@ public class SeekArc extends View {
 
     /**
      * set gauge meter ranges
+     *
      * @param rangesAr
      */
     public void setRangesAr(float[] rangesAr) {
@@ -159,6 +161,7 @@ public class SeekArc extends View {
 
     /**
      * set gauge meter ranges colors.
+     *
      * @param rangesColorAr
      */
     public void setRangesColorAr(int[] rangesColorAr) {
@@ -298,6 +301,12 @@ public class SeekArc extends View {
         return paint;
     }
 
+    private int pointerThreshold = 0;
+
+    public void resetPointerThreshold() {
+        this.pointerThreshold = 0;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         if (!mClockwise) {
@@ -305,40 +314,48 @@ public class SeekArc extends View {
         }
         // Draw the arcs
         // The initial rotational offset -90 means we start at 12 o'clock
-        int mAngleOffset = -90;
-        final int arcStart = mStartAngle + mAngleOffset + getArcRotation();
-        final int arcSweep = getSweepAngle();
+        if (!moveMarker) {
+            drawFourArc(canvas, pointerThreshold);
+            pointerThreshold += partitionThreshold;
+        } else {
+            divideArc(canvas);
+        }
 
-        divideArc(canvas, (int) (arcStart + mProgressSweep));
-        canvas.drawArc(mArcRect, arcStart + mProgressSweep, arcSweep - mProgressSweep, false,
-                mArcPaint);
-
-        if (mEnabled) {
+        if (moveMarker) {
             // Draw the thumb nail
             canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
             mThumb.draw(canvas);
         }
     }
 
-    private void divideArc(Canvas canvas, int max) {
+    private void drawFourArc(Canvas canvas, int pointerThreshold) {
+        for (int i = 0; i < seekBarRangesAr.length - 1; i++) {
+            if (pointerThreshold < seekBarRangesAr[i + 1] - seekBarRangesAr[i]) {
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), pointerThreshold, false, progressPaint[i]);
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]) + pointerThreshold, seekBarRangesAr[i + 1] - seekBarRangesAr[i] - pointerThreshold, false, mArcPaint);
+            } else {
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), seekBarRangesAr[i + 1] - seekBarRangesAr[i], false, progressPaint[i]);
+            }
+        }
+        if (pointerThreshold < 273 - seekBarRangesAr[seekBarRangesAr.length - 1]) {
+            canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[seekBarRangesAr.length - 1]), pointerThreshold, false, progressPaint[seekBarRangesAr.length - 1]);
+            canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[seekBarRangesAr.length - 1]) + pointerThreshold, 273 - seekBarRangesAr[seekBarRangesAr.length - 1] - pointerThreshold, false, mArcPaint);
+        } else {
+            canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[seekBarRangesAr.length - 1]), 273 - seekBarRangesAr[seekBarRangesAr.length - 1], false, progressPaint[seekBarRangesAr.length - 1]);
+        }
+    }
+
+    private void divideArc(Canvas canvas) {
         setupThumb();
         for (int i = 0; i < seekBarRangesAr.length; i++) {
             if (i < seekBarRangesAr.length - 1) {
-                if (max <= withThreshold(seekBarRangesAr[i + 1])) {
-                    for (int j = 0; j < i + 1; j++) {
-                        canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[j]), max - withThreshold(seekBarRangesAr[j]), false,
-                                progressPaint[j]);
-                    }
-                    break;
-                }
-
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(seekBarRangesAr[i + 1]) - withThreshold(seekBarRangesAr[i]), false,
+                        progressPaint[i]);
             } else {
-                for (int j = 0; j < i + 1; j++) {
-                    canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[j]), max - withThreshold(seekBarRangesAr[j]), false,
-                            progressPaint[j]);
-                }
-                break;
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(273) - withThreshold(seekBarRangesAr[i]), false,
+                        progressPaint[i]);
             }
+
         }
     }
 
@@ -498,7 +515,7 @@ public class SeekArc extends View {
     }
 
     private void onProgressRefresh(int progress, boolean fromUser) {
-        updateProgress(progress, fromUser);
+        updateProgress(progress, fromUser, false);
     }
 
     private void updateThumbPosition() {
@@ -507,8 +524,8 @@ public class SeekArc extends View {
         mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
     }
 
-    private void updateProgress(int progress, boolean fromUser) {
-
+    private void updateProgress(int progress, boolean fromUser, boolean moveMarker) {
+        this.moveMarker = moveMarker;
         if (progress == INVALID_PROGRESS_VALUE) {
             return;
         }
@@ -529,6 +546,8 @@ public class SeekArc extends View {
         invalidate();
     }
 
+    private boolean moveMarker = false;
+
     /**
      * Sets a listener to receive notifications of changes to the SeekArc's
      * progress level. Also provides notifications of when the user starts and
@@ -541,8 +560,8 @@ public class SeekArc extends View {
         mOnSeekArcChangeListener = l;
     }
 
-    public void setProgress(int progress) {
-        updateProgress(progress, false);
+    public void setProgress(int progress, boolean moveMarker) {
+        updateProgress(progress, false, moveMarker);
     }
 
     public int getProgress() {
