@@ -37,5 +37,6 @@
     <string name="title_activity_custom">Custom style</string>
     <string name="title_activity_scrollview">In scrollview</string>
     <string name="title_activity_disabled">Disabled (read only)</string>
+    <string name="btn_animate">animate</string>
 
 </resources>

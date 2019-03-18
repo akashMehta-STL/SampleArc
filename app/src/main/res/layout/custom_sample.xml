@@ -34,7 +34,7 @@
     <FrameLayout
             android:id="@+id/seekArcContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
         <com.triggertrap.seekarc.SeekArc
                 android:id="@+id/seekArc"
@@ -47,4 +47,24 @@
                 seekarc:startAngle="30"
                 seekarc:sweepAngle="300"/>
     </FrameLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+        <EditText
+                android:layout_width="match_parent"
+                android:layout_margin="10dp"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:id="@+id/etMarker"/>
+
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnAnimate"
+                android:text="@string/btn_animate"/>
+    </LinearLayout>
 </LinearLayout>

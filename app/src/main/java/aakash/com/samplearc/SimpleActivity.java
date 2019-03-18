@@ -28,7 +28,10 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import com.triggertrap.seekarc.SeekArc;
 
 /**
@@ -47,8 +50,14 @@ public class SimpleActivity extends Activity {
 
     private int animationPos = 0;
     private int notchPosition = 0;
-    private int max = 148;
-    private int marker = 140;
+    private int gaugeMax = 148;
+    private int[] gaugeRange;
+    /**
+     * This values will be come from api
+     */
+    private int originalRanges[] = new int[]{30, 70};
+    private int originalMin = 10;
+    private int originalMax = 190;
 
     protected int getLayoutFile() {
         return R.layout.holo_sample;
@@ -60,7 +69,6 @@ public class SimpleActivity extends Activity {
         setContentView(getLayoutFile());
 
         mSeekArc = findViewById(R.id.seekArc);
-        mSeekArc.setRangesAr(4);
         mSeekArc.setRangesColorAr(new int[]{
                 getResources().getColor(R.color.dot_color_green),
                 getResources().getColor(R.color.dot_color_orange),
@@ -79,10 +87,76 @@ public class SimpleActivity extends Activity {
         params.height = value;
         params.width = value;
         mSeekArc.setLayoutParams(params);
-        startAnimation();
+        Button btnAnimate = findViewById(R.id.btnAnimate);
+        gaugeRange = new int[originalRanges.length];
+        for (int i = 0; i < originalRanges.length; i++) {
+            gaugeRange[i] = (i + 1) * (gaugeMax / (originalRanges.length + 1));
+        }
+
+        mSeekArc.setRangesAr(originalRanges.length + 1);
+
+        btnAnimate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
+                int rangeMin = originalMin, rangeMax = originalMax;
+                int gaugeRangeMin = 0, gaugeRangeMax = gaugeMax;
+
+                if (originalRanges.length  == 2) {
+                    if (progress > originalMin && progress <= originalRanges[0]) {
+                        rangeMin = originalMin;
+                        rangeMax = originalRanges[0];
+                        gaugeRangeMin = 0;
+                        gaugeRangeMax = gaugeRange[0];
+                    } else if (progress <= originalMax && progress > originalRanges[1]) {
+                        rangeMin = originalRanges[1];
+                        rangeMax = originalMax;
+                        gaugeRangeMin = gaugeRange[1];
+                        gaugeRangeMax = gaugeMax;
+                    } else if (progress > originalRanges[0] && progress <= originalRanges[1]) {
+                        rangeMin = originalRanges[0];
+                        rangeMax = originalRanges[1];
+                        gaugeRangeMin = gaugeRange[0];
+                        gaugeRangeMax = gaugeRange[1];
+                    }
+                } else if (originalRanges.length == 3) {
+                    if (progress > originalMin && progress <= originalRanges[0]) {
+                        rangeMin = originalMin;
+                        rangeMax = originalRanges[0];
+                        gaugeRangeMin = 0;
+                        gaugeRangeMax = gaugeRange[0];
+                    } else if (progress > originalRanges[0] && progress <= originalRanges[1]) {
+                        rangeMin = originalRanges[0];
+                        rangeMax = originalRanges[1];
+                        gaugeRangeMin = gaugeRange[0];
+                        gaugeRangeMax = gaugeRange[1];
+                    } else if (progress > originalRanges[1] && progress <= originalRanges[2]) {
+                        rangeMin = originalRanges[1];
+                        rangeMax = originalRanges[2];
+                        gaugeRangeMin = gaugeRange[1];
+                        gaugeRangeMax = gaugeRange[2];
+                    } else if (progress > originalRanges[2] && progress <= originalMax) {
+                        rangeMin = originalRanges[2];
+                        rangeMax = originalMax;
+                        gaugeRangeMin = gaugeRange[2];
+                        gaugeRangeMax = gaugeMax;
+                    }
+                }
+
+                int percentage, gaugeProgress;
+                if (progress == rangeMin) {
+                    gaugeProgress = gaugeRangeMin;
+                } else {
+                    percentage = ((progress - rangeMin) * 100 / (rangeMax - rangeMin));
+                    gaugeProgress = (((gaugeRangeMax - gaugeRangeMin) * percentage) / 100) + gaugeRangeMin;
+                }
+
+                startAnimation(gaugeProgress);
+            }
+        });
     }
 
-    private void startAnimation() {
+    private void startAnimation(final float marker) {
         mSeekArc.resetPointerThreshold();
         animationPos = 0;
         notchPosition = 0;
@@ -90,7 +164,7 @@ public class SimpleActivity extends Activity {
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (animationPos < max) {
+                if (animationPos < gaugeMax) {
                     mSeekArc.setProgress(animationPos += animationSkipItem, false);
                     handler.postDelayed(runnable, animationDelay);
                 } else if (notchPosition < marker) {
