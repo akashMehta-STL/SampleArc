@@ -100,6 +100,7 @@ public class SimpleActivity extends Activity {
             @Override
             public void onClick(View v) {
                 int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
+                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
                 int rangeMin = originalMin, rangeMax = originalMax;
                 int gaugeRangeMin = 0, gaugeRangeMax = gaugeMax;
 
@@ -128,15 +129,32 @@ public class SimpleActivity extends Activity {
                     percentage = ((progress - rangeMin) * 100 / (rangeMax - rangeMin));
                     gaugeProgress = (((gaugeRangeMax - gaugeRangeMin) * percentage) / 100) + gaugeRangeMin;
                 }
+//============================================================================================================
+                for (int i = 0; i < originalRanges2.length - 1; i++) {
+                    if (progress2 >= originalRanges2[i] && progress2 <= originalRanges2[i + 1]) {
+                        rangeMin = originalRanges2[i];
+                        rangeMax = originalRanges2[i + 1];
+                        gaugeRangeMin = gaugeRange2[i];
+                        gaugeRangeMax = gaugeRange2[i + 1];
+                    }
+                }
+                int percentage2, gaugeProgress2;
+                if (progress2 == rangeMin) {
+                    gaugeProgress2 = gaugeRangeMin;
+                } else {
+                    percentage2 = ((progress2 - rangeMin) * 100 / (rangeMax - rangeMin));
+                    gaugeProgress2 = (((gaugeRangeMax - gaugeRangeMin) * percentage2) / 100) + gaugeRangeMin;
+                }
+//============================================================================================================
 
-                startAnimation(gaugeProgress);
+                startAnimation(gaugeProgress, gaugeProgress2);
             }
         });
     }
 
     private boolean marker1Progress = false;
 
-    private void startAnimation(final float marker) {
+    private void startAnimation(final float marker, final float marker2) {
         mSeekArc.resetPointerThreshold();
         animationPos = 0;
         notchPosition = 0;
@@ -153,7 +171,7 @@ public class SimpleActivity extends Activity {
                     handler.postDelayed(runnable, animationDelay);
                 } else {
                     marker1Progress = true;
-                    if (notchPosition1 < marker / 2) {
+                    if (notchPosition1 < marker2) {
                         mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
                         handler.postDelayed(runnable, animationDelay);
                     }

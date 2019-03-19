@@ -386,7 +386,7 @@ public class SeekArc extends View {
     private void setupThumb2() {
         for (int i = 0; i < seekBarRangesAr.length; i++) {
             if (i < (seekBarRangesAr.length - 1)) {
-                if (mProgressSweep <= seekBarRangesAr[i + 1]) {
+                if (mProgressSweep2 <= seekBarRangesAr[i + 1]) {
                     mThumb1 = rangesDrawableAr[i];
                     break;
                 }
