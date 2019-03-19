@@ -24,5 +24,8 @@
 <resources>
 
     <string name="app_name">Seekarc_library</string>
-
+    <string name="dot_color_orange">#f48918</string>
+    <string name="dot_color_red">#fe5965</string>
+    <string name="dot_color_blue">#16a4fa</string>
+    <string name="dot_color_green">#44dc91</string>
 </resources>

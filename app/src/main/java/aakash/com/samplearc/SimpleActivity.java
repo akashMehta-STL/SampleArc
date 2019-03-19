@@ -102,47 +102,24 @@ public class SimpleActivity extends Activity {
                 int rangeMin = originalMin, rangeMax = originalMax;
                 int gaugeRangeMin = 0, gaugeRangeMax = gaugeMax;
 
-                if (originalRanges.length  == 2) {
-                    if (progress > originalMin && progress <= originalRanges[0]) {
-                        rangeMin = originalMin;
-                        rangeMax = originalRanges[0];
-                        gaugeRangeMin = 0;
-                        gaugeRangeMax = gaugeRange[0];
-                    } else if (progress <= originalMax && progress > originalRanges[1]) {
-                        rangeMin = originalRanges[1];
-                        rangeMax = originalMax;
-                        gaugeRangeMin = gaugeRange[1];
-                        gaugeRangeMax = gaugeMax;
-                    } else if (progress > originalRanges[0] && progress <= originalRanges[1]) {
-                        rangeMin = originalRanges[0];
-                        rangeMax = originalRanges[1];
-                        gaugeRangeMin = gaugeRange[0];
-                        gaugeRangeMax = gaugeRange[1];
-                    }
-                } else if (originalRanges.length == 3) {
-                    if (progress > originalMin && progress <= originalRanges[0]) {
-                        rangeMin = originalMin;
-                        rangeMax = originalRanges[0];
-                        gaugeRangeMin = 0;
-                        gaugeRangeMax = gaugeRange[0];
-                    } else if (progress > originalRanges[0] && progress <= originalRanges[1]) {
-                        rangeMin = originalRanges[0];
-                        rangeMax = originalRanges[1];
-                        gaugeRangeMin = gaugeRange[0];
-                        gaugeRangeMax = gaugeRange[1];
-                    } else if (progress > originalRanges[1] && progress <= originalRanges[2]) {
-                        rangeMin = originalRanges[1];
-                        rangeMax = originalRanges[2];
-                        gaugeRangeMin = gaugeRange[1];
-                        gaugeRangeMax = gaugeRange[2];
-                    } else if (progress > originalRanges[2] && progress <= originalMax) {
-                        rangeMin = originalRanges[2];
-                        rangeMax = originalMax;
-                        gaugeRangeMin = gaugeRange[2];
-                        gaugeRangeMax = gaugeMax;
+                int[] gaugeRange2 = new int[gaugeRange.length + 2];
+                int[] originalRanges2 = new int[originalRanges.length + 2];
+
+                gaugeRange2[0] = gaugeRangeMin;
+                gaugeRange2[gaugeRange2.length - 1] = gaugeRangeMax;
+                System.arraycopy(gaugeRange, 0, gaugeRange2, 1, gaugeRange2.length - 2);
+
+                originalRanges2[0] = rangeMin;
+                originalRanges2[originalRanges2.length - 1] = rangeMax;
+                System.arraycopy(originalRanges, 0, originalRanges2, 1, originalRanges2.length - 2);
+                for (int i = 0; i < originalRanges2.length - 1; i++) {
+                    if (progress >= originalRanges2[i] && progress <= originalRanges2[i + 1]) {
+                        rangeMin = originalRanges2[i];
+                        rangeMax = originalRanges2[i + 1];
+                        gaugeRangeMin = gaugeRange2[i];
+                        gaugeRangeMax = gaugeRange2[i + 1];
                     }
                 }
-
                 int percentage, gaugeProgress;
                 if (progress == rangeMin) {
                     gaugeProgress = gaugeRangeMin;
