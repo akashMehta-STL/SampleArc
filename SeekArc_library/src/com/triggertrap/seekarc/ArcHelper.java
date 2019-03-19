@@ -109,10 +109,10 @@ public class ArcHelper {
             @Override
             public void run() {
                 if (animationPos < gaugeMax) {
-                    mSeekArc.setProgress(animationPos += animationSkipItem, false);
+                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
                     handler.postDelayed(runnable, animationDelay);
                 } else if (notchPosition < marker) {
-                    mSeekArc.setProgress(notchPosition += animationSkipItem, true);
+                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false );
                     handler.postDelayed(runnable, animationDelay);
                 }
             }

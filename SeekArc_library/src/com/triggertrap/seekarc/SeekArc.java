@@ -1,34 +1,35 @@
-/*******************************************************************************
- * The MIT License (MIT)
- *
- * Copyright (c) 2013 Triggertrap Ltd
- * Author Neil Davies
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of
- * this software and associated documentation files (the "Software"), to deal in
- * the Software without restriction, including without limitation the rights to
- * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
- * the Software, and to permit persons to whom the Software is furnished to do so,
- * subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
- * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
- * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- ******************************************************************************/
+/*
+
+  ***************************************************************************
+ The MIT License (MIT)
+
+ Copyright (c) 2013 Triggertrap Ltd
+ Author Neil Davies
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy of
+ this software and associated documentation files (the "Software"), to deal in
+ the Software without restriction, including without limitation the rights to
+ use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ the Software, and to permit persons to whom the Software is furnished to do so,
+ subject to the following conditions:
+
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 package com.triggertrap.seekarc;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
+import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -47,10 +48,6 @@ public class SeekArc extends View {
 
     private static final String TAG = SeekArc.class.getSimpleName();
     private static int INVALID_PROGRESS_VALUE = -1;
-
-    // TODO Mange other values according to this total range.
-    private final int TOTAL_RANGE = 273;
-    private final int partitionThreshold = 8;
 
     /**
      * The Drawable for the seek arc thumbnail
@@ -116,6 +113,7 @@ public class SeekArc extends View {
     // Internal variables
     private int mArcRadius = 0;
     private float mProgressSweep = 0;
+    private float mProgressSweep2 = 0;
     private RectF mArcRect = new RectF();
     private Paint mArcPaint;
 
@@ -145,28 +143,24 @@ public class SeekArc extends View {
     private int mTranslateY;
     private int mThumbXPos;
     private int mThumbYPos;
+
+    private int mThumbX1Pos;
+    private int mThumbY1Pos;
+
     private float mTouchIgnoreRadius;
     private OnSeekArcChangeListener mOnSeekArcChangeListener;
 
-    /**
-     * set gauge meter ranges
-     *
-     * @param rangesCount
-     */
     public void setRangesAr(int rangesCount) {
         this.seekBarRangesAr = new float[rangesCount];
         seekBarRangesAr[0] = 1;
-        int threshold = TOTAL_RANGE/rangesCount;
+        // TODO Mange other values according to this total range.
+        int TOTAL_RANGE = 273;
+        int threshold = TOTAL_RANGE / rangesCount;
         for (int i = 1; i < rangesCount; i++) {
             seekBarRangesAr[i] = i * threshold;
         }
     }
 
-    /**
-     * set gauge meter ranges colors.
-     *
-     * @param rangesColorAr
-     */
     public void setRangesColorAr(int[] rangesColorAr) {
         this.rangesColorAr = rangesColorAr;
         progressPaint[0] = setupPaint(0);
@@ -234,7 +228,6 @@ public class SeekArc extends View {
 
         // Defaults, may need to link this into theme settings
         int arcColor = res.getColor(R.color.progress_gray);
-        mThumb = res.getDrawable(R.drawable.seek_arc_control_selector);
         // Convert progress width to pixels for current density
         mProgressWidth = (int) (mProgressWidth * density);
 
@@ -316,16 +309,24 @@ public class SeekArc extends View {
         }
         // Draw the arcs
         // The initial rotational offset -90 means we start at 12 o'clock
-        if (!moveMarker) {
-            drawFourArc(canvas, pointerThreshold);
-            pointerThreshold += partitionThreshold;
-        } else {
-            divideArc(canvas);
-        }
+        drawFourArc(canvas, pointerThreshold);
+        int partitionThreshold = 8;
+        pointerThreshold += partitionThreshold;
 
         if (moveMarker) {
             // Draw the thumb nail
+            setupThumb();
             canvas.translate(mTranslateX - mThumbXPos, mTranslateY - mThumbYPos);
+            mThumb.draw(canvas);
+        }
+
+        if (moveMarker2) {
+            setupThumb2();
+            canvas.translate(mTranslateX - mThumbX1Pos, mTranslateY - mThumbY1Pos);
+            mThumb1.draw(canvas);
+
+            setupThumb();
+            canvas.translate(mThumbX1Pos - mThumbXPos, mThumbY1Pos - mThumbYPos);
             mThumb.draw(canvas);
         }
     }
@@ -347,20 +348,6 @@ public class SeekArc extends View {
         }
     }
 
-    private void divideArc(Canvas canvas) {
-        setupThumb();
-        for (int i = 0; i < seekBarRangesAr.length; i++) {
-            if (i < seekBarRangesAr.length - 1) {
-                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(seekBarRangesAr[i + 1]) - withThreshold(seekBarRangesAr[i]), false,
-                        progressPaint[i]);
-            } else {
-                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(273) - withThreshold(seekBarRangesAr[i]), false,
-                        progressPaint[i]);
-            }
-
-        }
-    }
-
     private void setupThumb() {
         for (int i = 0; i < seekBarRangesAr.length; i++) {
             if (i < (seekBarRangesAr.length - 1)) {
@@ -374,9 +361,31 @@ public class SeekArc extends View {
             }
 
         }
-        int thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
-        int thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
+        int thumbHalfheight = mThumb.getIntrinsicHeight() / 2;
+        int thumbHalfWidth = mThumb.getIntrinsicWidth() / 2;
         mThumb.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
+                thumbHalfheight);
+    }
+
+    // TODO: 19/3/19 added second thumb
+    private Drawable mThumb1;
+
+    private void setupThumb2() {
+        for (int i = 0; i < seekBarRangesAr.length; i++) {
+            if (i < (seekBarRangesAr.length - 1)) {
+                if (mProgressSweep <= seekBarRangesAr[i + 1]) {
+                    mThumb1 = rangesDrawableAr[i];
+                    break;
+                }
+            } else {
+                mThumb1 = rangesDrawableAr[i];
+                break;
+            }
+
+        }
+        int thumbHalfheight = mThumb1.getIntrinsicHeight() / 2;
+        int thumbHalfWidth = mThumb1.getIntrinsicWidth() / 2;
+        mThumb1.setBounds(-thumbHalfWidth, -thumbHalfheight, thumbHalfWidth,
                 thumbHalfheight);
     }
 
@@ -392,24 +401,33 @@ public class SeekArc extends View {
         final int width = getDefaultSize(getSuggestedMinimumWidth(),
                 widthMeasureSpec);
         final int min = Math.min(width, height);
-        float top = 0;
-        float left = 0;
-        int arcDiameter = 0;
+        float top;
+        float left;
+        int arcDiameter;
 
         mTranslateX = (int) (width * 0.5f);
         mTranslateY = (int) (height * 0.5f);
 
         arcDiameter = min - getPaddingLeft();
         mArcRadius = arcDiameter / 2;
-        top = height / 2 - (arcDiameter / 2);
-        left = width / 2 - (arcDiameter / 2);
+        top = (float) height / 2 - ((float) arcDiameter / 2);
+        left = (float) width / 2 - ((float) arcDiameter / 2);
         mArcRect.set(left, top, left + arcDiameter, top + arcDiameter);
 
-        int arcStart = (int) mProgressSweep + mStartAngle + getArcRotation() + 90;
-        mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart)));
-        mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
+        if (moveMarker) {
+            int arcStart = (int) mProgressSweep + mStartAngle + getArcRotation() + 90;
+            mThumbXPos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart)));
+            mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart)));
+        }
+        if (moveMarker2) {
+            int arcStart1 = (int) mProgressSweep2 + mStartAngle + getArcRotation() + 90;
+            mThumbX1Pos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart1)));
+            mThumbY1Pos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart1)));
+        }
 
-        setTouchInSide(mTouchInside);
+        if (mThumb != null) {
+            setTouchInSide(mTouchInside);
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -526,6 +544,22 @@ public class SeekArc extends View {
         mThumbYPos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
     }
 
+    private void updateThumbPosition1() {
+        int thumbAngle = (int) (mStartAngle + mProgressSweep2 + getArcRotation() + 90);
+        mThumbX1Pos = (int) (mArcRadius * Math.cos(Math.toRadians(thumbAngle)));
+        mThumbY1Pos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
+    }
+
+    private void updateProgress2(int progress, boolean moveMarker2) {
+        this.moveMarker2 = moveMarker2;
+        if (progress == INVALID_PROGRESS_VALUE) {
+            return;
+        }
+        mProgressSweep2 = (float) progress / mMax * getSweepAngle();
+        updateThumbPosition1();
+        invalidate();
+    }
+
     private void updateProgress(int progress, boolean fromUser, boolean moveMarker) {
         this.moveMarker = moveMarker;
         if (progress == INVALID_PROGRESS_VALUE) {
@@ -544,11 +578,11 @@ public class SeekArc extends View {
         mProgressSweep = (float) progress / mMax * getSweepAngle();
 
         updateThumbPosition();
-
         invalidate();
     }
 
     private boolean moveMarker = false;
+    private boolean moveMarker2 = false;
 
     /**
      * Sets a listener to receive notifications of changes to the SeekArc's
@@ -556,14 +590,19 @@ public class SeekArc extends View {
      * stops a touch gesture within the SeekArc.
      *
      * @param l The seek bar notification listener
-     * @see SeekArc.OnSeekBarChangeListener
      */
     public void setOnSeekArcChangeListener(OnSeekArcChangeListener l) {
         mOnSeekArcChangeListener = l;
     }
 
-    public void setProgress(int progress, boolean moveMarker) {
-        updateProgress(progress, false, moveMarker);
+    public void setProgress(int progress, boolean moveMarker, boolean moveMarker2) {
+        this.moveMarker = moveMarker;
+        this.moveMarker2 = moveMarker2;
+        if (moveMarker) {
+            updateProgress(progress, false, moveMarker);
+        } else if (moveMarker2) {
+            updateProgress2(progress, true);
+        }
     }
 
     public int getProgress() {
@@ -596,8 +635,8 @@ public class SeekArc extends View {
     }
 
     public void setTouchInSide(boolean isEnabled) {
-        int thumbHalfheight = (int) mThumb.getIntrinsicHeight() / 2;
-        int thumbHalfWidth = (int) mThumb.getIntrinsicWidth() / 2;
+        int thumbHalfheight = mThumb.getIntrinsicHeight() / 2;
+        int thumbHalfWidth = mThumb.getIntrinsicWidth() / 2;
         mTouchInside = isEnabled;
         if (mTouchInside) {
             mTouchIgnoreRadius = (float) mArcRadius / 4;

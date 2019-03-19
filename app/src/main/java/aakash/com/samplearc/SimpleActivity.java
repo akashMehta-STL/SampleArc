@@ -50,6 +50,7 @@ public class SimpleActivity extends Activity {
 
     private int animationPos = 0;
     private int notchPosition = 0;
+    private int notchPosition1 = 0;
     private int gaugeMax = 148;
     private int[] gaugeRange;
     /**
@@ -133,20 +134,29 @@ public class SimpleActivity extends Activity {
         });
     }
 
+    private boolean marker1Progress = false;
     private void startAnimation(final float marker) {
         mSeekArc.resetPointerThreshold();
         animationPos = 0;
         notchPosition = 0;
+        notchPosition1 = 0;
 
         runnable = new Runnable() {
             @Override
             public void run() {
                 if (animationPos < gaugeMax) {
-                    mSeekArc.setProgress(animationPos += animationSkipItem, false);
+                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
                     handler.postDelayed(runnable, animationDelay);
-                } else if (notchPosition < marker) {
-                    mSeekArc.setProgress(notchPosition += animationSkipItem, true);
+                } else if (notchPosition < marker && !marker1Progress) {
+                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
                     handler.postDelayed(runnable, animationDelay);
+                }
+                else {
+                    marker1Progress = true;
+                    if (notchPosition1 < marker/2) {
+                        mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
+                        handler.postDelayed(runnable, animationDelay);
+                    }
                 }
             }
         };
