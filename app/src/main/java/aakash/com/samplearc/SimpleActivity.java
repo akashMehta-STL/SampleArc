@@ -135,6 +135,7 @@ public class SimpleActivity extends Activity {
     }
 
     private boolean marker1Progress = false;
+
     private void startAnimation(final float marker) {
         mSeekArc.resetPointerThreshold();
         animationPos = 0;
@@ -150,10 +151,9 @@ public class SimpleActivity extends Activity {
                 } else if (notchPosition < marker && !marker1Progress) {
                     mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
                     handler.postDelayed(runnable, animationDelay);
-                }
-                else {
+                } else {
                     marker1Progress = true;
-                    if (notchPosition1 < marker/2) {
+                    if (notchPosition1 < marker / 2) {
                         mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
                         handler.postDelayed(runnable, animationDelay);
                     }

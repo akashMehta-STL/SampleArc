@@ -29,7 +29,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.*;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -307,11 +306,11 @@ public class SeekArc extends View {
         if (!mClockwise) {
             canvas.scale(-1, 1, mArcRect.centerX(), mArcRect.centerY());
         }
-        // Draw the arcs
-        // The initial rotational offset -90 means we start at 12 o'clock
         drawFourArc(canvas, pointerThreshold);
-        int partitionThreshold = 8;
-        pointerThreshold += partitionThreshold;
+        pointerThreshold += 8;
+        if (moveMarker || moveMarker2) {
+            divideArc(canvas);
+        }
 
         if (moveMarker) {
             // Draw the thumb nail
@@ -345,6 +344,20 @@ public class SeekArc extends View {
             canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[seekBarRangesAr.length - 1]) + pointerThreshold, 273 - seekBarRangesAr[seekBarRangesAr.length - 1] - pointerThreshold, false, mArcPaint);
         } else {
             canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[seekBarRangesAr.length - 1]), 273 - seekBarRangesAr[seekBarRangesAr.length - 1], false, progressPaint[seekBarRangesAr.length - 1]);
+        }
+    }
+
+    private void divideArc(Canvas canvas) {
+//        setupThumb();
+        for (int i = 0; i < seekBarRangesAr.length; i++) {
+            if (i < seekBarRangesAr.length - 1) {
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(seekBarRangesAr[i + 1]) - withThreshold(seekBarRangesAr[i]), false,
+                        progressPaint[i]);
+            } else {
+                canvas.drawArc(mArcRect, withThreshold(seekBarRangesAr[i]), withThreshold(273) - withThreshold(seekBarRangesAr[i]), false,
+                        progressPaint[i]);
+            }
+
         }
     }
 
@@ -584,33 +597,19 @@ public class SeekArc extends View {
     private boolean moveMarker = false;
     private boolean moveMarker2 = false;
 
-    /**
-     * Sets a listener to receive notifications of changes to the SeekArc's
-     * progress level. Also provides notifications of when the user starts and
-     * stops a touch gesture within the SeekArc.
-     *
-     * @param l The seek bar notification listener
-     */
-    public void setOnSeekArcChangeListener(OnSeekArcChangeListener l) {
-        mOnSeekArcChangeListener = l;
-    }
-
     public void setProgress(int progress, boolean moveMarker, boolean moveMarker2) {
         this.moveMarker = moveMarker;
         this.moveMarker2 = moveMarker2;
-        if (moveMarker) {
-            updateProgress(progress, false, moveMarker);
-        } else if (moveMarker2) {
-            updateProgress2(progress, true);
+        if (moveMarker || moveMarker2) {
+            if (moveMarker) {
+                updateProgress(progress, false, moveMarker);
+            } else {
+                updateProgress2(progress, true);
+            }
+        } else {
+            invalidate();
         }
-    }
 
-    public int getProgress() {
-        return mProgress;
-    }
-
-    public int getProgressWidth() {
-        return mProgressWidth;
     }
 
     public void setProgressWidth(int mProgressWidth) {
