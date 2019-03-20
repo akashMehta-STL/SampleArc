@@ -11,6 +11,7 @@ anim abc_slide_out_bottom
 anim abc_slide_out_top
 anim abc_tooltip_enter
 anim abc_tooltip_exit
+anim fade_in
 attr actionBarDivider
 attr actionBarItemBackground
 attr actionBarPopupTheme
@@ -811,6 +812,10 @@ string abc_shareactionprovider_share_with
 string abc_shareactionprovider_share_with_application
 string abc_toolbar_collapse_description
 string app_name
+string dot_color_blue
+string dot_color_green
+string dot_color_orange
+string dot_color_red
 string search_menu_title
 string status_bar_notification_info_overflow
 style AlertDialog_AppCompat

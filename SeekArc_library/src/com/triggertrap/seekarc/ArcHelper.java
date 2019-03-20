@@ -17,37 +17,50 @@ public class ArcHelper {
     private ArcHelper() {
     }
 
-    public static final int TYPE_DEFAULT_GAUGE = 0;
+    private static final int TYPE_DEFAULT_GAUGE = 0;
     public static final int TYPE_TWO_MARKER_GAUGE = 4;
 
     private static final int GAUGE_ANIMATION_DELAY = 20;
-    private static final int GAUGE_TEXT_FADE_DELAY = 10;
     private static final int NOTCH_COUNT = 33;
-    private static final int RADIUS = 170;
-    public static final int MAX_GAUGE = 148;
+    private static final int MAX_GAUGE = 148;
     private Context context;
     private SeekArc arcPointer;
     private int totalRangeMin;
     private int totalRangeMax;
+
     private int gaugeType;
     private int notchReading = 0;
     private Runnable runnable;
-    private Handler handler;
+    private Handler handler = new Handler();
     private int maxNotchReading;
     private View centerView;
     private float[] rangeList;
     private int[] colorList;
 
+    private int totalRangeMin2;
+    private int totalRangeMax2;
+    private int maxNotchReading2;
+    private float[] rangeList2;
+
     // TODO required fields
     private Drawable[] rangesDrawableAr;
     private SeekArc mSeekArc;
+
+    private int animationDelay = 1;
+    private int animationSkipItem = 4;
+    private int animationPos = 0;
+    private int notchPosition = 0, notchPosition1 = 0;
+    private int gaugeRangeMin = 0, gaugeRangeMax = MAX_GAUGE;
+    private boolean marker1Progress = false;
+
     /**
      * This values will be come from api
      */
-    private int gaugeMax = 148;
     private int[] gaugeRange;
 
     public void startAnimation() {
+
+        /* Setup Seek Arc class params. */
         mSeekArc = this.arcPointer;
         mSeekArc.setRangesColorAr(colorList);
         mSeekArc.setRangesDrawableAr(rangesDrawableAr);
@@ -57,87 +70,147 @@ public class ArcHelper {
         params.height = value;
         params.width = value;
         mSeekArc.setLayoutParams(params);
-        gaugeRange = new int[rangeList.length];
-        for (int i = 0; i < rangeList.length; i++) {
-            gaugeRange[i] = (i + 1) * (gaugeMax / (rangeList.length + 1));
+        gaugeRange = new int[rangeList.length + 2];
+        gaugeRange[0] = 0;
+        for (int i = 1; i <= rangeList.length; i++) {
+            gaugeRange[i] = i * (MAX_GAUGE / (rangeList.length + 1));
         }
+        gaugeRange[rangeList.length + 1] = MAX_GAUGE;
 
         mSeekArc.setRangesAr(rangeList.length + 1);
+
         float rangeMin = totalRangeMin, rangeMax = totalRangeMax;
-        int gaugeRangeMin = 0, gaugeRangeMax = gaugeMax;
+        float[] marker1Ranges = new float[rangeList.length + 2];
+        marker1Ranges[0] = rangeMin;
+        marker1Ranges[marker1Ranges.length - 1] = rangeMax;
+        System.arraycopy(rangeList, 0, marker1Ranges, 1, marker1Ranges.length - 2);
 
-        int[] gaugeRange2 = new int[gaugeRange.length + 2];
-        float[] originalRanges2 = new float[rangeList.length + 2];
+        if (gaugeType == TYPE_DEFAULT_GAUGE) {
+            startOneMarkerAnimation(maxNotchReading, totalRangeMin, totalRangeMax, marker1Ranges);
+        } else if (gaugeType == TYPE_TWO_MARKER_GAUGE) {
+            float rangeMin1 = totalRangeMin2, rangeMax1 = totalRangeMax2;
+            float[] marker2Ranges = new float[rangeList.length + 2];
+            marker2Ranges[0] = rangeMin1;
+            marker2Ranges[marker2Ranges.length - 1] = rangeMax1;
+            System.arraycopy(rangeList2, 0, marker2Ranges, 1, marker2Ranges.length - 2);
+            startTwoMarkersAnimation(maxNotchReading, maxNotchReading2,
+                    totalRangeMin, totalRangeMax,
+                    totalRangeMin2, totalRangeMax2,
+                    marker1Ranges, marker2Ranges);
 
-        gaugeRange2[0] = gaugeRangeMin;
-        gaugeRange2[gaugeRange2.length - 1] = gaugeRangeMax;
-        System.arraycopy(gaugeRange, 0, gaugeRange2, 1, gaugeRange2.length - 2);
-
-        originalRanges2[0] = rangeMin;
-        originalRanges2[originalRanges2.length - 1] = rangeMax;
-        System.arraycopy(rangeList, 0, originalRanges2, 1, originalRanges2.length - 2);
-        for (int i = 0; i < originalRanges2.length - 1; i++) {
-            if (maxNotchReading >= originalRanges2[i] && maxNotchReading <= originalRanges2[i + 1]) {
-                rangeMin = originalRanges2[i];
-                rangeMax = originalRanges2[i + 1];
-                gaugeRangeMin = gaugeRange2[i];
-                gaugeRangeMax = gaugeRange2[i + 1];
-            }
         }
-        float percentage, gaugeProgress;
-        if (maxNotchReading == rangeMin) {
-            gaugeProgress = gaugeRangeMin;
-        } else {
-            percentage = ((maxNotchReading - rangeMin) * 100 / (rangeMax - rangeMin));
-            gaugeProgress = (((gaugeRangeMax - gaugeRangeMin) * percentage) / 100) + gaugeRangeMin;
-        }
-
-        startAnimation(gaugeProgress);
     }
 
-    private int animationDelay = 1;
-    private int animationSkipItem = 4;
-    private int animationPos = 0;
-    private int notchPosition = 0;
-
-    private void startAnimation(final float marker) {
-        mSeekArc.resetPointerThreshold();
-        animationPos = 0;
-        notchPosition = 0;
-
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (animationPos < gaugeMax) {
-                    mSeekArc.setProgress(animationPos += animationSkipItem, false);
-                    handler.postDelayed(runnable, animationDelay);
-                } else if (notchPosition < marker) {
-                    mSeekArc.setProgress(notchPosition += animationSkipItem, true);
-                    handler.postDelayed(runnable, animationDelay);
-                }
-            }
-        };
-        handler.postDelayed(runnable, animationDelay);
-
+    private void animateCenterView() {
         if (context != null) {
             Animation aniFade = AnimationUtils.loadAnimation(context, R.anim.fade_in);
-            aniFade.setDuration(GAUGE_ANIMATION_DELAY * maxNotchReading);
+            aniFade.setDuration(GAUGE_ANIMATION_DELAY * ((MAX_GAUGE + maxNotchReading + maxNotchReading2)/ 4));
             if (centerView != null) {
                 centerView.startAnimation(aniFade);
             }
         }
     }
 
+    private void startOneMarkerAnimation(final float progress,
+                                         float originalMin, float originalMax,
+                                         float[] originalRanges) {
+        mSeekArc.resetPointerThreshold();
+        animationPos = 0;
+        notchPosition = 0;
+        final float gaugeProgress = createMarker(progress, originalMin, originalMax, originalRanges);
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (animationPos < MAX_GAUGE) {
+                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
+                    handler.postDelayed(runnable, animationDelay);
+                } else if (notchPosition < gaugeProgress) {
+                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
+                    handler.postDelayed(runnable, animationDelay);
+                }
+            }
+        };
+        handler.postDelayed(runnable, animationDelay);
+        animateCenterView();
+    }
+
+    private void startTwoMarkersAnimation(final float marker,
+                                          final float marker2,
+                                          float originalMin, float originalMax,
+                                          float originalMin2, float originalMax2,
+                                          float[] originalRanges, float[] originalRanges2) {
+        final float gaugeProgress = createMarker(marker, originalMin, originalMax, originalRanges);
+        final float gaugeProgress2 = createMarker(marker2, originalMin2, originalMax2, originalRanges2);
+        mSeekArc.resetPointerThreshold();
+        animationPos = 0;
+        notchPosition = 0;
+        notchPosition1 = 0;
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (animationPos < MAX_GAUGE) {
+                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
+                    handler.postDelayed(runnable, animationDelay);
+                } else if (notchPosition < gaugeProgress && !marker1Progress) {
+                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
+                    handler.postDelayed(runnable, animationDelay);
+                } else {
+                    marker1Progress = true;
+                    if (notchPosition1 < gaugeProgress2) {
+                        mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
+                        handler.postDelayed(runnable, animationDelay);
+                    }
+                }
+            }
+        };
+        handler.postDelayed(runnable, animationDelay);
+        animateCenterView();
+    }
+
+    private float createMarker(final float progress,
+                               float originalMin,
+                               float originalMax,
+                               float[] originalRanges) {
+        float[] markerRange = new float[originalRanges.length + 2];
+        markerRange[0] = originalMin;
+        markerRange[markerRange.length - 1] = originalMax;
+        System.arraycopy(originalRanges, 0, markerRange, 1, markerRange.length - 2);
+
+        for (int i = 0; i < markerRange.length - 1; i++) {
+            if (progress >= markerRange[i] && progress <= markerRange[i + 1]) {
+                originalMin = markerRange[i];
+                originalMax = markerRange[i + 1];
+                gaugeRangeMin = gaugeRange[i];
+                gaugeRangeMax = gaugeRange[i + 1];
+            }
+        }
+        final float percentage, gaugeProgress;
+        if (progress == originalMin) {
+            gaugeProgress = gaugeRangeMin;
+        } else {
+            percentage = ((progress - originalMin) * 100 / (originalMax - originalMin));
+            gaugeProgress = (((gaugeRangeMax - gaugeRangeMin) * percentage) / 100) + gaugeRangeMin;
+        }
+        return gaugeProgress;
+    }
+
     public static ArcHelper getTwoMarkerGuage(int max, int min,
+                                              int max2, int min2,
                                               float[] parameterRange,
+                                              float[] parameterRange2,
                                               int[] colorRange,
                                               Drawable[] rangesDrawableAr,
-                                              int notchReading) {
+                                              int notchReading, int notchReading2) {
         return ArcHelper.getInstance()
                 .setTotalRangeMax(max)
+                .setTotalRangeMax2(max2)
                 .setTotalRangeMin(min)
+                .setTotalRangeMin2(min2)
                 .setRangeList(parameterRange)
+                .setRangeList2(parameterRange2)
                 .setNotchReading(notchReading)
+                .setNotchReading2(notchReading2)
                 .setRangesDrawableAr(rangesDrawableAr)
                 .setColorList(colorRange)
                 .setGaugeType(TYPE_TWO_MARKER_GAUGE);
@@ -145,8 +218,9 @@ public class ArcHelper {
 
     public static ArcHelper getSingleMarkerGauge(int max, int min,
                                                  float[] parameterRange,
+                                                 int[] colorRange,
                                                  Drawable[] rangesDrawableAr,
-                                                 int[] colorRange, int notchReading) {
+                                                 int notchReading) {
         return ArcHelper.getInstance()
                 .setTotalRangeMax(max)
                 .setTotalRangeMin(min)
@@ -163,6 +237,27 @@ public class ArcHelper {
 
     public Handler getHandler() {
         return this.handler;
+    }
+
+
+    public ArcHelper setTotalRangeMin2(int totalRangeMin2) {
+        this.totalRangeMin2 = totalRangeMin2;
+        return this;
+    }
+
+    public ArcHelper setTotalRangeMax2(int totalRangeMax2) {
+        this.totalRangeMax2 = totalRangeMax2;
+        return this;
+    }
+
+    public ArcHelper setNotchReading2(int maxNotchReading2) {
+        this.maxNotchReading2 = maxNotchReading2;
+        return this;
+    }
+
+    public ArcHelper setRangeList2(float[] rangeList2) {
+        this.rangeList2 = rangeList2;
+        return this;
     }
 
     public ArcHelper setRangesDrawableAr(Drawable[] rangesDrawableAr) {
