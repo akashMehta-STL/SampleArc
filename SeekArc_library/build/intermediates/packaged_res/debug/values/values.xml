@@ -16,6 +16,10 @@
     <dimen name="dot_weight">12dp</dimen>
     <dimen name="seekarc_padding">15dp</dimen>
     <string name="app_name">Seekarc_library</string>
+    <string name="dot_color_blue">#16a4fa</string>
+    <string name="dot_color_green">#44dc91</string>
+    <string name="dot_color_orange">#f48918</string>
+    <string name="dot_color_red">#fe5965</string>
     <style name="SeekArc">
         <item name="arcColor">@color/progress_gray_dark</item>
     </style>
