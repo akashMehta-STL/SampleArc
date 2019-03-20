@@ -60,6 +60,10 @@ public class SimpleActivity extends Activity {
     private int originalMin = 10;
     private int originalMax = 190;
 
+    private int originalRanges2[] = new int[] {309, 409};
+    private int originalMin2 = 300;
+    private int originalMax2 = 400;
+
     protected int getLayoutFile() {
         return R.layout.holo_sample;
     }
@@ -100,49 +104,55 @@ public class SimpleActivity extends Activity {
             @Override
             public void onClick(View v) {
                 int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
-                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
-                int rangeMin = originalMin, rangeMax = originalMax;
                 int gaugeRangeMin = 0, gaugeRangeMax = gaugeMax;
-
                 int[] gaugeRange2 = new int[gaugeRange.length + 2];
-                int[] originalRanges2 = new int[originalRanges.length + 2];
-
                 gaugeRange2[0] = gaugeRangeMin;
                 gaugeRange2[gaugeRange2.length - 1] = gaugeRangeMax;
                 System.arraycopy(gaugeRange, 0, gaugeRange2, 1, gaugeRange2.length - 2);
 
-                originalRanges2[0] = rangeMin;
-                originalRanges2[originalRanges2.length - 1] = rangeMax;
-                System.arraycopy(originalRanges, 0, originalRanges2, 1, originalRanges2.length - 2);
-                for (int i = 0; i < originalRanges2.length - 1; i++) {
-                    if (progress >= originalRanges2[i] && progress <= originalRanges2[i + 1]) {
-                        rangeMin = originalRanges2[i];
-                        rangeMax = originalRanges2[i + 1];
+                int marker1Min = originalMin, marker1Max = originalMax;
+                int[] marker1Range = new int[originalRanges.length + 2];
+                marker1Range[0] = marker1Min;
+                marker1Range[marker1Range.length - 1] = marker1Max;
+                System.arraycopy(originalRanges, 0, marker1Range, 1, marker1Range.length - 2);
+
+                for (int i = 0; i < marker1Range.length - 1; i++) {
+                    if (progress >= marker1Range[i] && progress <= marker1Range[i + 1]) {
+                        marker1Min = marker1Range[i];
+                        marker1Max = marker1Range[i + 1];
                         gaugeRangeMin = gaugeRange2[i];
                         gaugeRangeMax = gaugeRange2[i + 1];
                     }
                 }
                 int percentage, gaugeProgress;
-                if (progress == rangeMin) {
+                if (progress == marker1Min) {
                     gaugeProgress = gaugeRangeMin;
                 } else {
-                    percentage = ((progress - rangeMin) * 100 / (rangeMax - rangeMin));
+                    percentage = ((progress - marker1Min) * 100 / (marker1Max - marker1Min));
                     gaugeProgress = (((gaugeRangeMax - gaugeRangeMin) * percentage) / 100) + gaugeRangeMin;
                 }
 //============================================================================================================
-                for (int i = 0; i < originalRanges2.length - 1; i++) {
-                    if (progress2 >= originalRanges2[i] && progress2 <= originalRanges2[i + 1]) {
-                        rangeMin = originalRanges2[i];
-                        rangeMax = originalRanges2[i + 1];
+
+                int marker2Min = originalMin2, marker2Max = originalMax2;
+                int[] marker2Range = new int[originalRanges2.length + 2];
+                marker2Range[0] = marker2Min;
+                marker2Range[marker2Range.length - 1] = marker2Max;
+                System.arraycopy(originalRanges2, 0, marker2Range, 1, marker2Range.length - 2);
+
+                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
+                for (int i = 0; i < marker1Range.length - 1; i++) {
+                    if (progress2 >= marker2Range[i] && progress2 <= marker2Range[i + 1]) {
+                        marker2Min = marker2Range[i];
+                        marker2Max = marker2Range[i + 1];
                         gaugeRangeMin = gaugeRange2[i];
                         gaugeRangeMax = gaugeRange2[i + 1];
                     }
                 }
                 int percentage2, gaugeProgress2;
-                if (progress2 == rangeMin) {
+                if (progress2 == marker1Min) {
                     gaugeProgress2 = gaugeRangeMin;
                 } else {
-                    percentage2 = ((progress2 - rangeMin) * 100 / (rangeMax - rangeMin));
+                    percentage2 = ((progress2 - marker2Min) * 100 / (marker2Max - marker2Min));
                     gaugeProgress2 = (((gaugeRangeMax - gaugeRangeMin) * percentage2) / 100) + gaugeRangeMin;
                 }
 //============================================================================================================
