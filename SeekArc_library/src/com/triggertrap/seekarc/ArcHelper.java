@@ -79,24 +79,13 @@ public class ArcHelper {
 
         mSeekArc.setRangesAr(rangeList.length + 1);
 
-        float rangeMin = totalRangeMin, rangeMax = totalRangeMax;
-        float[] marker1Ranges = new float[rangeList.length + 2];
-        marker1Ranges[0] = rangeMin;
-        marker1Ranges[marker1Ranges.length - 1] = rangeMax;
-        System.arraycopy(rangeList, 0, marker1Ranges, 1, marker1Ranges.length - 2);
-
         if (gaugeType == TYPE_DEFAULT_GAUGE) {
-            startOneMarkerAnimation(maxNotchReading, totalRangeMin, totalRangeMax, marker1Ranges);
+            startOneMarkerAnimation(maxNotchReading, totalRangeMin, totalRangeMax, rangeList);
         } else if (gaugeType == TYPE_TWO_MARKER_GAUGE) {
-            float rangeMin1 = totalRangeMin2, rangeMax1 = totalRangeMax2;
-            float[] marker2Ranges = new float[rangeList.length + 2];
-            marker2Ranges[0] = rangeMin1;
-            marker2Ranges[marker2Ranges.length - 1] = rangeMax1;
-            System.arraycopy(rangeList2, 0, marker2Ranges, 1, marker2Ranges.length - 2);
             startTwoMarkersAnimation(maxNotchReading, maxNotchReading2,
                     totalRangeMin, totalRangeMax,
                     totalRangeMin2, totalRangeMax2,
-                    marker1Ranges, marker2Ranges);
+                    rangeList, rangeList2);
 
         }
     }
@@ -177,12 +166,14 @@ public class ArcHelper {
         markerRange[markerRange.length - 1] = originalMax;
         System.arraycopy(originalRanges, 0, markerRange, 1, markerRange.length - 2);
 
-        for (int i = 0; i < markerRange.length - 1; i++) {
-            if (progress >= markerRange[i] && progress <= markerRange[i + 1]) {
-                originalMin = markerRange[i];
-                originalMax = markerRange[i + 1];
-                gaugeRangeMin = gaugeRange[i];
-                gaugeRangeMax = gaugeRange[i + 1];
+        if (originalRanges.length > 0) {
+            for (int i = 0; i < markerRange.length - 1; i++) {
+                if (progress >= markerRange[i] && progress <= markerRange[i + 1]) {
+                    originalMin = markerRange[i];
+                    originalMax = markerRange[i + 1];
+                    gaugeRangeMin = gaugeRange[i];
+                    gaugeRangeMax = gaugeRange[i + 1];
+                }
             }
         }
         final float percentage, gaugeProgress;

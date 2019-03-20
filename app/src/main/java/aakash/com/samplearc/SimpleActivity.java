@@ -113,21 +113,21 @@ public class SimpleActivity extends Activity {
         btnAnimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
-                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
-                ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
-                        rangesColorAr, rangesDrawableAr, progress, progress2)
-                        .setArcPointer(mSeekArc)
-                        .setCenterView(centerText)
-                        .setContext(SimpleActivity.this)
-                        .startAnimation();
-
-//                ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
-//                        rangesColorAr, rangesDrawableAr, progress)
+//                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
+//                ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
+//                        rangesColorAr, rangesDrawableAr, progress, progress2)
 //                        .setArcPointer(mSeekArc)
 //                        .setCenterView(centerText)
 //                        .setContext(SimpleActivity.this)
 //                        .startAnimation();
+
+                int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
+                ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
+                        rangesColorAr, rangesDrawableAr, progress)
+                        .setArcPointer(mSeekArc)
+                        .setCenterView(centerText)
+                        .setContext(SimpleActivity.this)
+                        .startAnimation();
             }
         });
     }
