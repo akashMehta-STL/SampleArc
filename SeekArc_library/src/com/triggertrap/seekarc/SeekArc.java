@@ -31,8 +31,6 @@ import android.content.res.TypedArray;
 import android.graphics.*;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -44,8 +42,6 @@ import android.view.View;
  * @author Neil Davies
  */
 public class SeekArc extends View {
-
-    private static final String TAG = SeekArc.class.getSimpleName();
     private static int INVALID_PROGRESS_VALUE = -1;
 
     /**
@@ -146,9 +142,6 @@ public class SeekArc extends View {
     private int mThumbX1Pos;
     private int mThumbY1Pos;
 
-    private float mTouchIgnoreRadius;
-    private OnSeekArcChangeListener mOnSeekArcChangeListener;
-
     public void setRangesAr(int rangesCount) {
         this.seekBarRangesAr = new float[rangesCount];
         seekBarRangesAr[0] = 1;
@@ -172,38 +165,6 @@ public class SeekArc extends View {
         this.rangesDrawableAr = rangesDrawableAr;
     }
 
-    public interface OnSeekArcChangeListener {
-
-        /**
-         * Notification that the progress level has changed. Clients can use the
-         * fromUser parameter to distinguish user-initiated changes from those
-         * that occurred programmatically.
-         *
-         * @param seekArc  The SeekArc whose progress has changed
-         * @param progress The current progress level. This will be in the range
-         *                 0..max where max was set by
-         *                 max is 100.)
-         * @param fromUser True if the progress change was initiated by the user.
-         */
-        void onProgressChanged(SeekArc seekArc, int progress, boolean fromUser);
-
-        /**
-         * Notification that the user has started a touch gesture. Clients may
-         * want to use this to disable advancing the seekbar.
-         *
-         * @param seekArc The SeekArc in which the touch gesture began
-         */
-        void onStartTrackingTouch(SeekArc seekArc);
-
-        /**
-         * Notification that the user has finished a touch gesture. Clients may
-         * want to use this to re-enable advancing the seekarc.
-         *
-         * @param seekArc The SeekArc in which the touch gesture began
-         */
-        void onStopTrackingTouch(SeekArc seekArc);
-    }
-
     public SeekArc(Context context) {
         super(context);
         init(context, null, 0);
@@ -220,8 +181,6 @@ public class SeekArc extends View {
     }
 
     private void init(Context context, AttributeSet attrs, int defStyle) {
-
-        Log.d(TAG, "Initialising SeekArc");
         final Resources res = getResources();
         float density = context.getResources().getDisplayMetrics().density;
 
@@ -437,40 +396,7 @@ public class SeekArc extends View {
             mThumbX1Pos = (int) (mArcRadius * Math.cos(Math.toRadians(arcStart1)));
             mThumbY1Pos = (int) (mArcRadius * Math.sin(Math.toRadians(arcStart1)));
         }
-
-        if (mThumb != null) {
-            setTouchInSide(mTouchInside);
-        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mEnabled) {
-            this.getParent().requestDisallowInterceptTouchEvent(true);
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    onStartTrackingTouch();
-                    updateOnTouch(event);
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    updateOnTouch(event);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    onStopTrackingTouch();
-                    setPressed(false);
-                    this.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;
-                case MotionEvent.ACTION_CANCEL:
-                    onStopTrackingTouch();
-                    setPressed(false);
-                    this.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;
-            }
-            return true;
-        }
-        return false;
     }
 
     @Override
@@ -481,74 +407,6 @@ public class SeekArc extends View {
             mThumb.setState(state);
         }
         invalidate();
-    }
-
-    private void onStartTrackingTouch() {
-        if (mOnSeekArcChangeListener != null) {
-            mOnSeekArcChangeListener.onStartTrackingTouch(this);
-        }
-    }
-
-    private void onStopTrackingTouch() {
-        if (mOnSeekArcChangeListener != null) {
-            mOnSeekArcChangeListener.onStopTrackingTouch(this);
-        }
-    }
-
-    private void updateOnTouch(MotionEvent event) {
-        boolean ignoreTouch = ignoreTouch(event.getX(), event.getY());
-        if (ignoreTouch) {
-            return;
-        }
-        setPressed(true);
-        double mTouchAngle = getTouchDegrees(event.getX(), event.getY());
-        int progress = getProgressForAngle(mTouchAngle);
-        onProgressRefresh(progress, true);
-    }
-
-    private boolean ignoreTouch(float xPos, float yPos) {
-        boolean ignore = false;
-        float x = xPos - mTranslateX;
-        float y = yPos - mTranslateY;
-
-        float touchRadius = (float) Math.sqrt(((x * x) + (y * y)));
-        if (touchRadius < mTouchIgnoreRadius) {
-            ignore = true;
-        }
-        return ignore;
-    }
-
-    private double getTouchDegrees(float xPos, float yPos) {
-        float x = xPos - mTranslateX;
-        float y = yPos - mTranslateY;
-        //invert the x-coord if we are rotating anti-clockwise
-        x = (mClockwise) ? x : -x;
-        // convert to arc Angle
-        double angle = Math.toDegrees(Math.atan2(y, x) + (Math.PI / 2)
-                - Math.toRadians(getArcRotation()));
-        if (angle < 0) {
-            angle = 360 + angle;
-        }
-        angle -= mStartAngle;
-        return angle;
-    }
-
-    private int getProgressForAngle(double angle) {
-        int touchProgress = (int) Math.round(valuePerDegree() * angle);
-
-        touchProgress = (touchProgress < 0) ? INVALID_PROGRESS_VALUE
-                : touchProgress;
-        touchProgress = (touchProgress > mMax) ? INVALID_PROGRESS_VALUE
-                : touchProgress;
-        return touchProgress;
-    }
-
-    private float valuePerDegree() {
-        return (float) mMax / getSweepAngle();
-    }
-
-    private void onProgressRefresh(int progress, boolean fromUser) {
-        updateProgress(progress, fromUser, false);
     }
 
     private void updateThumbPosition() {
@@ -563,8 +421,8 @@ public class SeekArc extends View {
         mThumbY1Pos = (int) (mArcRadius * Math.sin(Math.toRadians(thumbAngle)));
     }
 
-    private void updateProgress2(int progress, boolean moveMarker2) {
-        this.moveMarker2 = moveMarker2;
+    private void updateProgress2(int progress) {
+        this.moveMarker2 = true;
         if (progress == INVALID_PROGRESS_VALUE) {
             return;
         }
@@ -573,7 +431,7 @@ public class SeekArc extends View {
         invalidate();
     }
 
-    private void updateProgress(int progress, boolean fromUser, boolean moveMarker) {
+    private void updateProgress(int progress, boolean moveMarker) {
         this.moveMarker = moveMarker;
         if (progress == INVALID_PROGRESS_VALUE) {
             return;
@@ -582,11 +440,6 @@ public class SeekArc extends View {
         progress = (progress > mMax) ? mMax : progress;
         progress = (progress < 0) ? 0 : progress;
         mProgress = progress;
-
-        if (mOnSeekArcChangeListener != null) {
-            mOnSeekArcChangeListener
-                    .onProgressChanged(this, progress, fromUser);
-        }
 
         mProgressSweep = (float) progress / mMax * getSweepAngle();
 
@@ -602,9 +455,9 @@ public class SeekArc extends View {
         this.moveMarker2 = moveMarker2;
         if (moveMarker || moveMarker2) {
             if (moveMarker) {
-                updateProgress(progress, false, moveMarker);
+                updateProgress(progress, moveMarker);
             } else {
-                updateProgress2(progress, true);
+                updateProgress2(progress);
             }
         } else {
             invalidate();
@@ -631,19 +484,6 @@ public class SeekArc extends View {
 
     public int getSweepAngle() {
         return mSweepAngle - 9;
-    }
-
-    public void setTouchInSide(boolean isEnabled) {
-        int thumbHalfheight = mThumb.getIntrinsicHeight() / 2;
-        int thumbHalfWidth = mThumb.getIntrinsicWidth() / 2;
-        mTouchInside = isEnabled;
-        if (mTouchInside) {
-            mTouchIgnoreRadius = (float) mArcRadius / 4;
-        } else {
-            // Don't use the exact radius makes interaction too tricky
-            mTouchIgnoreRadius = mArcRadius
-                    - Math.min(thumbHalfWidth, thumbHalfheight);
-        }
     }
 
     public boolean isEnabled() {
