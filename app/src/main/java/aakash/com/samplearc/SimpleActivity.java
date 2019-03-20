@@ -62,7 +62,7 @@ public class SimpleActivity extends Activity {
 
     private int originalRanges2[] = new int[] {309, 409};
     private int originalMin2 = 300;
-    private int originalMax2 = 400;
+    private int originalMax2 = 500;
 
     protected int getLayoutFile() {
         return R.layout.holo_sample;
