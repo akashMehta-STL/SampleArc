@@ -44,18 +44,10 @@ public class SimpleActivity extends Activity {
 
     private SeekArc mSeekArc;
     private TextView centerText;
-    private int gaugeMax = 148;
-    private int[] gaugeRange;
     /**
      * This values will be come from api
      */
-    private float originalRanges[] = new float[]{30, 70};
-    private int originalMin = 10;
-    private int originalMax = 190;
-
-    private float originalRanges2[] = new float[]{309, 409};
-    private int originalMin2 = 300;
-    private int originalMax2 = 500;
+    private float originalRanges[] = new float[]{};
     private int[] rangesColorAr;
 
     /**
@@ -71,28 +63,12 @@ public class SimpleActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutFile());
-        rangesColorAr = new int[]{getResources().getColor(R.color.dot_color_red),
-                getResources().getColor(R.color.dot_color_blue),
-                getResources().getColor(R.color.dot_color_green),
-                getResources().getColor(R.color.dot_color_orange)};
-        rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.red_dot),
-                getResources().getDrawable(R.drawable.blue_dot),
-                getResources().getDrawable(R.drawable.green_dot),
-                getResources().getDrawable(R.drawable.orange_dot)};
+        rangesColorAr = new int[]{
+                getResources().getColor(R.color.dot_color_blue)};
+        rangesDrawableAr = new Drawable[]{
+                getResources().getDrawable(R.drawable.blue_dot)};
         mSeekArc = findViewById(R.id.seekArc);
         centerText = findViewById(R.id.tvCenterText);
-        mSeekArc.setRangesColorAr(new int[]{
-                getResources().getColor(R.color.dot_color_green),
-                getResources().getColor(R.color.dot_color_orange),
-                getResources().getColor(R.color.dot_color_red),
-                getResources().getColor(R.color.dot_color_blue)
-        });
-        mSeekArc.setRangesDrawableAr(new Drawable[]{
-                getResources().getDrawable(R.drawable.green_dot),
-                getResources().getDrawable(R.drawable.orange_dot),
-                getResources().getDrawable(R.drawable.red_dot),
-                getResources().getDrawable(R.drawable.blue_dot)
-        });
         int value = getResources().getDisplayMetrics().widthPixels / 3;
 
         ViewGroup.LayoutParams params = mSeekArc.getLayoutParams();
@@ -101,29 +77,11 @@ public class SimpleActivity extends Activity {
         mSeekArc.setLayoutParams(params);
         Button btnAnimate = findViewById(R.id.btnAnimate);
 
-        gaugeRange = new int[originalRanges.length + 2];
-        gaugeRange[0] = 0;
-        for (int i = 1; i <= originalRanges.length; i++) {
-            gaugeRange[i] = i * (gaugeMax / (originalRanges.length + 1));
-        }
-        gaugeRange[originalRanges.length + 1] = gaugeMax;
-
-        mSeekArc.setRangesAr(originalRanges.length + 1);
-
         btnAnimate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                int progress2 = Integer.parseInt(((EditText) findViewById(R.id.etMarker2)).getText().toString());
-//                ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
-//                        rangesColorAr, rangesDrawableAr, progress, progress2)
-//                        .setArcPointer(mSeekArc)
-//                        .setCenterView(centerText)
-//                        .setContext(SimpleActivity.this)
-//                        .startAnimation();
-
-                int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
-                ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
-                        rangesColorAr, rangesDrawableAr, progress)
+                ArcHelper.getSingleMarkerGauge(200, 80, originalRanges,
+                        rangesColorAr, rangesDrawableAr, 172)
                         .setArcPointer(mSeekArc)
                         .setCenterView(centerText)
                         .setContext(SimpleActivity.this)

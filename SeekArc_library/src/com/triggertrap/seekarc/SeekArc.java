@@ -156,9 +156,15 @@ public class SeekArc extends View {
     public void setRangesColorAr(int[] rangesColorAr) {
         this.rangesColorAr = rangesColorAr;
         progressPaint[0] = setupPaint(0);
-        progressPaint[1] = setupPaint(1);
-        progressPaint[2] = setupPaint(2);
-        progressPaint[3] = setupPaint(3);
+        if (rangesColorAr.length > 1) {
+            progressPaint[1] = setupPaint(1);
+        }
+        if (rangesColorAr.length > 2) {
+            progressPaint[2] = setupPaint(2);
+        }
+        if (rangesColorAr.length > 3) {
+            progressPaint[3] = setupPaint(3);
+        }
     }
 
     public void setRangesDrawableAr(Drawable[] rangesDrawableAr) {
@@ -233,12 +239,16 @@ public class SeekArc extends View {
         mArcPaint.setStyle(Paint.Style.STROKE);
         mArcPaint.setStrokeWidth(mArcWidth);
         //mArcPaint.setAlpha(45);
-
         progressPaint[0] = setupPaint(0);
-        progressPaint[1] = setupPaint(1);
-        progressPaint[2] = setupPaint(2);
-        progressPaint[3] = setupPaint(3);
-
+        if (rangesColorAr.length > 1) {
+            progressPaint[1] = setupPaint(1);
+        }
+        if (rangesColorAr.length > 2) {
+            progressPaint[2] = setupPaint(2);
+        }
+        if (rangesColorAr.length > 3) {
+            progressPaint[3] = setupPaint(3);
+        }
         mArcPaint.setStrokeCap(Paint.Cap.ROUND);
         setProgressWidth(mProgressWidth);
         setArcWidth(mArcWidth);
@@ -380,6 +390,8 @@ public class SeekArc extends View {
         mTranslateX = (int) (width * 0.5f);
         mTranslateY = (int) (height * 0.5f);
 
+        System.out.println("mTranslateX = " + mTranslateX);
+        System.out.println("mTranslateY = " + mTranslateY);
         arcDiameter = min - getPaddingLeft();
         mArcRadius = arcDiameter / 2;
         top = (float) height / 2 - ((float) arcDiameter / 2);
