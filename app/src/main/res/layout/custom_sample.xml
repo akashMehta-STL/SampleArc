@@ -22,63 +22,50 @@
   CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:seekarc="http://schemas.android.com/apk/res-auto"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:paddingBottom="@dimen/activity_vertical_margin"
-              android:paddingLeft="@dimen/activity_horizontal_margin"
-              android:paddingRight="@dimen/activity_horizontal_margin"
-              android:paddingTop="@dimen/activity_vertical_margin">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:seekarc="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity" >
 
     <FrameLayout
-            android:id="@+id/seekArcContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+        android:id="@+id/seekArcContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+
         <com.triggertrap.seekarc.SeekArc
-                android:id="@+id/seekArc"
-                android:layout_width="170dp"
-                android:layout_height="170dp"
-                android:layout_gravity="center"
-                android:padding="@dimen/seekarc_padding"
-                seekarc:max="150"
-                seekarc:rotation="180"
-                seekarc:startAngle="30"
-                seekarc:sweepAngle="300"/>
+            android:id="@+id/seekArc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="30dp"
+            seekarc:arcColor="@color/dark_red"
+            seekarc:clockwise="true"
+            seekarc:max="150"
+            seekarc:progressColor="@color/red"
+            seekarc:rotation="180"
+            seekarc:startAngle="30"
+            seekarc:sweepAngle="300"
+            seekarc:thumb="@drawable/custom_seek_arc_control_selector"
+            seekarc:touchInside="true" />
 
         <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:id="@+id/tvCenterText"
-                android:text="CenterText"/>
+            android:id="@+id/seekArcProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="0"
+            android:textSize="40sp" />
     </FrameLayout>
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
 
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_margin="10dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:id="@+id/etMarker"/>
-        <EditText
-                android:layout_width="match_parent"
-                android:layout_margin="10dp"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:id="@+id/etMarker2"/>
+    <include
+        android:id="@+id/controls"
+        layout="@layout/controls" />
 
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnAnimate"
-                android:text="@string/btn_animate"/>
-    </LinearLayout>
 </LinearLayout>
