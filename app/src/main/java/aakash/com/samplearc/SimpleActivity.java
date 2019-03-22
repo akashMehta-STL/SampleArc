@@ -43,19 +43,18 @@ import com.triggertrap.seekarc.SeekArc;
 public class SimpleActivity extends Activity {
 
     private SeekArc mSeekArc;
-    private TextView centerText;
     private int gaugeMax = 148;
     private int[] gaugeRange;
     /**
      * This values will be come from api
      */
-    private float originalRanges[] = new float[]{30, 70};
-    private int originalMin = 10;
-    private int originalMax = 190;
+    private float originalRanges[] = new float[]{60, 80};
+    private int originalMin = 40;
+    private int originalMax = 100;
 
-    private float originalRanges2[] = new float[]{309, 409};
-    private int originalMin2 = 300;
-    private int originalMax2 = 500;
+    private float originalRanges2[] = new float[]{90, 120};
+    private int originalMin2 = 70;
+    private int originalMax2 = 170;
     private int[] rangesColorAr;
 
     /**
@@ -80,7 +79,6 @@ public class SimpleActivity extends Activity {
                 getResources().getDrawable(R.drawable.green_dot),
                 getResources().getDrawable(R.drawable.orange_dot)};
         mSeekArc = findViewById(R.id.seekArc);
-        centerText = findViewById(R.id.tvCenterText);
         mSeekArc.setRangesColorAr(new int[]{
                 getResources().getColor(R.color.dot_color_green),
                 getResources().getColor(R.color.dot_color_orange),
@@ -119,7 +117,6 @@ public class SimpleActivity extends Activity {
                     ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
                             rangesColorAr, rangesDrawableAr, progress)
                             .setArcPointer(mSeekArc)
-                            .setCenterView(centerText)
                             .setContext(SimpleActivity.this)
                             .startAnimation();
                 } else {
@@ -127,7 +124,6 @@ public class SimpleActivity extends Activity {
                     ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
                             rangesColorAr, rangesDrawableAr, progress, progress2)
                             .setArcPointer(mSeekArc)
-                            .setCenterView(centerText)
                             .setContext(SimpleActivity.this)
                             .startAnimation();
                 }
