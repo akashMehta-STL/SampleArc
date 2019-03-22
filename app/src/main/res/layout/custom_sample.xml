@@ -47,6 +47,7 @@
                 android:layout_margin="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:text="92"
                 android:id="@+id/etMarker"
                 tools:ignore="Autofill,LabelFor"/>
         <EditText
@@ -54,6 +55,7 @@
                 android:layout_margin="10dp"
                 android:layout_height="wrap_content"
                 android:inputType="number"
+                android:text="131"
                 android:id="@+id/etMarker2"
                 tools:ignore="Autofill,LabelFor"/>
 

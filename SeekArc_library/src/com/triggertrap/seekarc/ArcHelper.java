@@ -134,9 +134,26 @@ public class ArcHelper {
         animationPos = 0;
         notchPosition = 0;
         notchPosition1 = 0;
-        mSeekArc.setProgress(MAX_GAUGE, false, false);
-        mSeekArc.setProgress((int) gaugeProgress, true, false);
-        mSeekArc.setProgress((int) gaugeProgress2, false, true);
+
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (animationPos < MAX_GAUGE) {
+                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
+                    handler.postDelayed(runnable, animationDelay);
+                } else if (notchPosition < gaugeProgress && !marker1Progress) {
+                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
+                    handler.postDelayed(runnable, animationDelay);
+                } else {
+                    marker1Progress = true;
+                    if (notchPosition1 < gaugeProgress2) {
+                        mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
+                        handler.postDelayed(runnable, animationDelay);
+                    }
+                }
+            }
+        };
+        handler.postDelayed(runnable, animationDelay);
         animateCenterView();
     }
 

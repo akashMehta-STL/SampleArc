@@ -50,14 +50,10 @@ public class SeekArc extends View {
     private Drawable mThumb;
 
     /**
-     * The Maximum value that this SeekArc can be set to
-     */
-    private int mMax = 100;
-
-    /**
      * The Current value that the SeekArc is set to
      */
     private int mProgress = 0;
+    private int mProgress1 = 0;
 
     /**
      * The width of the progress line for this SeekArc
@@ -200,8 +196,8 @@ public class SeekArc extends View {
             // Attribute initialization
             final TypedArray a = context.obtainStyledAttributes(attrs,
                     R.styleable.SeekArc, defStyle, 0);
-            mMax = a.getInteger(R.styleable.SeekArc_max, mMax);
             mProgress = a.getInteger(R.styleable.SeekArc_progress, mProgress);
+            mProgress1 = a.getInteger(R.styleable.SeekArc_progress1, mProgress1);
             mProgressWidth = (int) a.getDimension(
                     R.styleable.SeekArc_progressWidth, mProgressWidth);
             mArcWidth = (int) a.getDimension(R.styleable.SeekArc_arcWidth,
@@ -222,13 +218,9 @@ public class SeekArc extends View {
             a.recycle();
         }
 
-        mProgress = (mProgress > mMax) ? mMax : mProgress;
-        mProgress = (mProgress < 0) ? 0 : mProgress;
-
         mSweepAngle = (getSweepAngle() > 360) ? 360 : getSweepAngle();
         mSweepAngle = (getSweepAngle() < 0) ? 0 : getSweepAngle();
 
-        mProgressSweep = (float) mProgress / mMax * getSweepAngle();
 
         mStartAngle = (mStartAngle > 360) ? 0 : mStartAngle;
         mStartAngle = (mStartAngle < 0) ? 0 : mStartAngle;
@@ -390,8 +382,6 @@ public class SeekArc extends View {
         mTranslateX = (int) (width * 0.5f);
         mTranslateY = (int) (height * 0.5f);
 
-        System.out.println("mTranslateX = " + mTranslateX);
-        System.out.println("mTranslateY = " + mTranslateY);
         arcDiameter = min - getPaddingLeft();
         mArcRadius = arcDiameter / 2;
         top = (float) height / 2 - ((float) arcDiameter / 2);
@@ -438,7 +428,14 @@ public class SeekArc extends View {
         if (progress == INVALID_PROGRESS_VALUE) {
             return;
         }
-        mProgressSweep2 = (float) progress / mMax * getSweepAngle();
+
+        int mMax1 = 148;
+        progress = (progress > mMax1) ? mMax1 : progress;
+        int mMin1 = 0;
+        progress = (progress < mMin1) ? mMin1 : progress;
+        mProgress1 = progress;
+
+        mProgressSweep2 = (float) progress / mMax1 * getSweepAngle();
         updateThumbPosition1();
         invalidate();
     }
@@ -449,8 +446,10 @@ public class SeekArc extends View {
             return;
         }
 
+        int mMax = 148;
         progress = (progress > mMax) ? mMax : progress;
-        progress = (progress < 0) ? 0 : progress;
+        int mMin = 0;
+        progress = (progress < mMin) ? mMin : progress;
         mProgress = progress;
 
         mProgressSweep = (float) progress / mMax * getSweepAngle();
