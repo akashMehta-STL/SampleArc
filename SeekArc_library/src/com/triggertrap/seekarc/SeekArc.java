@@ -28,7 +28,9 @@ package com.triggertrap.seekarc;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -126,10 +128,10 @@ public class SeekArc extends View {
     /**
      * Here we will provide drawable icon for particular range.
      */
-    private Drawable[] rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.red_dot),
-            getResources().getDrawable(R.drawable.blue_dot),
-            getResources().getDrawable(R.drawable.green_dot),
-            getResources().getDrawable(R.drawable.orange_dot)};
+    private Drawable[] rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.seek_arc_red_dot),
+            getResources().getDrawable(R.drawable.seek_arc_blue_dot),
+            getResources().getDrawable(R.drawable.seek_arc_green_dot),
+            getResources().getDrawable(R.drawable.seek_arc_orange_dot)};
     private int mTranslateX;
     private int mTranslateY;
     private int mThumbXPos;

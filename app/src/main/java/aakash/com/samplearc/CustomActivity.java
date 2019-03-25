@@ -48,9 +48,9 @@ public class CustomActivity extends Activity {
 	/**
 	 * This values will be come from api
 	 */
-	private float originalRanges[] = new float[]{60, 80};
-	private int originalMin = 40;
-	private int originalMax = 100;
+	private float originalRanges[] = new float[]{30f, 50f};
+	private int originalMin = 10;
+	private int originalMax = 120;
 
 	private float originalRanges2[] = new float[]{90, 120};
 	private int originalMin2 = 70;
@@ -74,10 +74,10 @@ public class CustomActivity extends Activity {
 				getResources().getColor(R.color.dot_color_blue),
 				getResources().getColor(R.color.dot_color_green),
 				getResources().getColor(R.color.dot_color_orange)};
-		rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.red_dot),
-				getResources().getDrawable(R.drawable.blue_dot),
-				getResources().getDrawable(R.drawable.green_dot),
-				getResources().getDrawable(R.drawable.orange_dot)};
+		rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.seek_arc_red_dot),
+				getResources().getDrawable(R.drawable.seek_arc_blue_dot),
+				getResources().getDrawable(R.drawable.seek_arc_green_dot),
+				getResources().getDrawable(R.drawable.seek_arc_orange_dot)};
 		mSeekArc = findViewById(R.id.seekArc);
 		mSeekArc.setRangesColorAr(new int[]{
 				getResources().getColor(R.color.dot_color_green),
@@ -86,10 +86,10 @@ public class CustomActivity extends Activity {
 				getResources().getColor(R.color.dot_color_blue)
 		});
 		mSeekArc.setRangesDrawableAr(new Drawable[]{
-				getResources().getDrawable(R.drawable.green_dot),
-				getResources().getDrawable(R.drawable.orange_dot),
-				getResources().getDrawable(R.drawable.red_dot),
-				getResources().getDrawable(R.drawable.blue_dot)
+				getResources().getDrawable(R.drawable.seek_arc_green_dot),
+				getResources().getDrawable(R.drawable.seek_arc_orange_dot),
+				getResources().getDrawable(R.drawable.seek_arc_red_dot),
+				getResources().getDrawable(R.drawable.seek_arc_blue_dot)
 		});
 		int value = getResources().getDisplayMetrics().widthPixels / 3;
 
