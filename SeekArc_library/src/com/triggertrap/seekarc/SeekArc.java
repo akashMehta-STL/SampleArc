@@ -270,7 +270,7 @@ public class SeekArc extends View {
             canvas.scale(-1, 1, mArcRect.centerX(), mArcRect.centerY());
         }
         drawFourArc(canvas, pointerThreshold);
-        pointerThreshold += 8;
+        pointerThreshold += 2;
         if (moveMarker || moveMarker2) {
             divideArc(canvas);
         }

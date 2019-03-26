@@ -21,7 +21,6 @@ public class ArcHelper {
     public static final int TYPE_TWO_MARKER_GAUGE = 4;
 
     private static final int GAUGE_ANIMATION_DELAY = 20;
-    private static final int NOTCH_COUNT = 33;
     private static final int MAX_GAUGE = 148;
     private Context context;
     private SeekArc arcPointer;
@@ -29,7 +28,6 @@ public class ArcHelper {
     private int totalRangeMax;
 
     private int gaugeType;
-    private int notchReading = 0;
     private Runnable runnable;
     private Handler handler = new Handler();
     private int maxNotchReading;
@@ -46,8 +44,8 @@ public class ArcHelper {
     private Drawable[] rangesDrawableAr;
     private SeekArc mSeekArc;
 
-    private int animationDelay = 1;
-    private int animationSkipItem = 4;
+    private int animationDelay = 10;
+    private int animationSkipItem = 1;
     private int animationPos = 0;
     private int notchPosition = 0, notchPosition1 = 0;
     private int gaugeRangeMin = 0, gaugeRangeMax = MAX_GAUGE;
@@ -64,7 +62,7 @@ public class ArcHelper {
         mSeekArc = this.arcPointer;
         mSeekArc.setRangesColorAr(colorList);
         mSeekArc.setRangesDrawableAr(rangesDrawableAr);
-        int value = context.getResources().getDisplayMetrics().widthPixels / 3;
+        int value = 2 * (context.getResources().getDisplayMetrics().widthPixels) / 5;
 
         ViewGroup.LayoutParams params = mSeekArc.getLayoutParams();
         params.height = value;
@@ -93,7 +91,7 @@ public class ArcHelper {
     private void animateCenterView() {
         if (context != null) {
             Animation aniFade = AnimationUtils.loadAnimation(context, R.anim.fade_in);
-            aniFade.setDuration(GAUGE_ANIMATION_DELAY * ((MAX_GAUGE + maxNotchReading + maxNotchReading2)/ 4));
+            aniFade.setDuration(GAUGE_ANIMATION_DELAY * ((MAX_GAUGE + maxNotchReading + maxNotchReading2) / 4));
             if (centerView != null) {
                 centerView.startAnimation(aniFade);
             }
@@ -102,7 +100,7 @@ public class ArcHelper {
 
     private void startOneMarkerAnimation(final float progress,
                                          float originalMin, float originalMax,
-                                         float[] originalRanges) {
+                                         final float[] originalRanges) {
         mSeekArc.resetPointerThreshold();
         animationPos = 0;
         notchPosition = 0;
@@ -110,7 +108,7 @@ public class ArcHelper {
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (animationPos < MAX_GAUGE) {
+                if (animationPos <= MAX_GAUGE / (originalRanges.length + 1) + (originalRanges.length + 1)) {
                     mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
                     handler.postDelayed(runnable, animationDelay);
                 } else if (notchPosition < gaugeProgress) {
@@ -127,7 +125,7 @@ public class ArcHelper {
                                           final float marker2,
                                           float originalMin, float originalMax,
                                           float originalMin2, float originalMax2,
-                                          float[] originalRanges, float[] originalRanges2) {
+                                          final float[] originalRanges, float[] originalRanges2) {
         final float gaugeProgress = createMarker(marker, originalMin, originalMax, originalRanges);
         final float gaugeProgress2 = createMarker(marker2, originalMin2, originalMax2, originalRanges2);
         mSeekArc.resetPointerThreshold();
@@ -138,7 +136,7 @@ public class ArcHelper {
         runnable = new Runnable() {
             @Override
             public void run() {
-                if (animationPos < MAX_GAUGE) {
+                if (animationPos <= MAX_GAUGE / (originalRanges.length + 1) + (originalRanges.length + 1)) {
                     mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
                     handler.postDelayed(runnable, animationDelay);
                 } else if (notchPosition < gaugeProgress && !marker1Progress) {

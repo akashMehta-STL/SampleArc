@@ -35,90 +35,79 @@ import com.triggertrap.seekarc.ArcHelper;
 import com.triggertrap.seekarc.SeekArc;
 
 /**
- * 
  * CustomActivity.java
+ *
  * @author Neil Davies
- * 
  */
 public class CustomActivity extends Activity {
 
 
-	private SeekArc mSeekArc;
+    private SeekArc mSeekArc;
 
-	/**
-	 * This values will be come from api
-	 */
-	private float originalRanges[] = new float[]{30f, 50f};
-	private int originalMin = 10;
-	private int originalMax = 120;
+    /**
+     * This values will be come from api
+     */
+    private float originalRanges[] = new float[]{30f, 50f, 70f};
+    private int originalMin = 40;
+    private int originalMax = 100;
 
-	private float originalRanges2[] = new float[]{90, 120};
-	private int originalMin2 = 70;
-	private int originalMax2 = 170;
-	private int[] rangesColorAr;
+    private float originalRanges2[] = new float[]{90, 120};
+    private int originalMin2 = 70;
+    private int originalMax2 = 170;
+    private int[] rangesColorAr;
 
-	/**
-	 * Here we will provide drawable icon for particular range.
-	 */
-	private Drawable[] rangesDrawableAr;
+    /**
+     * Here we will provide drawable icon for particular range.
+     */
+    private Drawable[] rangesDrawableAr;
 
-	protected int getLayoutFile() {
-		return R.layout.custom_sample;
-	}
+    protected int getLayoutFile() {
+        return R.layout.custom_sample;
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(getLayoutFile());
-		rangesColorAr = new int[]{getResources().getColor(R.color.dot_color_red),
-				getResources().getColor(R.color.dot_color_blue),
-				getResources().getColor(R.color.dot_color_green),
-				getResources().getColor(R.color.dot_color_orange)};
-		rangesDrawableAr = new Drawable[]{getResources().getDrawable(R.drawable.seek_arc_red_dot),
-				getResources().getDrawable(R.drawable.seek_arc_blue_dot),
-				getResources().getDrawable(R.drawable.seek_arc_green_dot),
-				getResources().getDrawable(R.drawable.seek_arc_orange_dot)};
-		mSeekArc = findViewById(R.id.seekArc);
-		mSeekArc.setRangesColorAr(new int[]{
-				getResources().getColor(R.color.dot_color_green),
-				getResources().getColor(R.color.dot_color_orange),
-				getResources().getColor(R.color.dot_color_red),
-				getResources().getColor(R.color.dot_color_blue)
-		});
-		mSeekArc.setRangesDrawableAr(new Drawable[]{
-				getResources().getDrawable(R.drawable.seek_arc_green_dot),
-				getResources().getDrawable(R.drawable.seek_arc_orange_dot),
-				getResources().getDrawable(R.drawable.seek_arc_red_dot),
-				getResources().getDrawable(R.drawable.seek_arc_blue_dot)
-		});
-		int value = getResources().getDisplayMetrics().widthPixels / 3;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(getLayoutFile());
+        rangesColorAr = new int[]{
+                getResources().getColor(R.color.dot_color_blue),
+                getResources().getColor(R.color.dot_color_red),
+                getResources().getColor(R.color.dot_color_green),
+                getResources().getColor(R.color.dot_color_orange)};
+        rangesDrawableAr = new Drawable[]{
+                getResources().getDrawable(R.drawable.seek_arc_blue_dot),
+                getResources().getDrawable(R.drawable.seek_arc_red_dot),
+                getResources().getDrawable(R.drawable.seek_arc_green_dot),
+                getResources().getDrawable(R.drawable.seek_arc_orange_dot)};
+        mSeekArc = findViewById(R.id.seekArc);
+        int value = getResources().getDisplayMetrics().widthPixels / 3;
 
-		ViewGroup.LayoutParams params = mSeekArc.getLayoutParams();
-		params.height = value;
-		params.width = value;
-		mSeekArc.setLayoutParams(params);
-		Button btnAnimate = findViewById(R.id.btnAnimate);
+        ViewGroup.LayoutParams params = mSeekArc.getLayoutParams();
+        params.height = value;
+        params.width = value;
+        mSeekArc.setLayoutParams(params);
+        Button btnAnimate = findViewById(R.id.btnAnimate);
 
-		btnAnimate.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
-				String progress2Text = ((EditText) findViewById(R.id.etMarker2)).getText().toString();
-				if (progress2Text.equals("")) {
-					ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
-							rangesColorAr, rangesDrawableAr, progress)
-							.setArcPointer(mSeekArc)
-							.setContext(CustomActivity.this)
-							.startAnimation();
-				} else {
-					int progress2 = Integer.parseInt(progress2Text);
-					ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
-							rangesColorAr, rangesDrawableAr, progress, progress2)
-							.setArcPointer(mSeekArc)
-							.setContext(CustomActivity.this)
-							.startAnimation();
-				}
-			}
-		});
-	}
+        btnAnimate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int progress = Integer.parseInt(((EditText) findViewById(R.id.etMarker)).getText().toString());
+                String progress2Text = ((EditText) findViewById(R.id.etMarker2)).getText().toString();
+                if (progress2Text.equals("")) {
+                    ArcHelper.getSingleMarkerGauge(originalMax, originalMin, originalRanges,
+                            rangesColorAr, rangesDrawableAr, progress)
+                            .setArcPointer(mSeekArc)
+                            .setContext(CustomActivity.this)
+                            .startAnimation();
+                } else {
+                    int progress2 = Integer.parseInt(progress2Text);
+                    ArcHelper.getTwoMarkerGuage(originalMax, originalMin, originalMax2, originalMin2, originalRanges, originalRanges2,
+                            rangesColorAr, rangesDrawableAr, progress, progress2)
+                            .setArcPointer(mSeekArc)
+                            .setContext(CustomActivity.this)
+                            .startAnimation();
+                }
+            }
+        });
+    }
 }

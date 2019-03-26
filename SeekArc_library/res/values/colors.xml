@@ -31,4 +31,7 @@
     <color name="dot_color_red">#fe5965</color>
     <color name="dot_color_blue">#16a4fa</color>
     <color name="dot_color_green">#44dc91</color>
+    <color name="gradient_start_color">#32383838</color>
+    <color name="gradient_center_color">#12383838</color>
+    <color name="gradient_end_color">#02383838</color>
 </resources>

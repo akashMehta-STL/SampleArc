@@ -4,10 +4,13 @@
     <item android:height="@dimen/dot_height"
           android:width="@dimen/dot_weight">
         <shape android:shape="oval">
-            <gradient android:startColor="@color/progress_gray"
-                      android:centerColor="@color/progress_gray"
-                      android:endColor="@color/progress_gray"/>
-
+            <gradient
+                    android:gradientRadius="@dimen/gradient_radius"
+                    android:type="radial"
+                    android:startColor="@color/gradient_start_color"
+                    android:centerColor="@color/gradient_center_color"
+                    android:endColor="@color/gradient_end_color"
+            />
         </shape>
     </item>
     <item android:start="@dimen/dot_padding_start"
