@@ -47,7 +47,7 @@ public class CustomActivity extends Activity {
     /**
      * This values will be come from api
      */
-    private float originalRanges[] = new float[]{30f, 50f, 70f};
+    private float originalRanges[] = new float[]{50f, 70f};
     private int originalMin = 40;
     private int originalMax = 100;
 

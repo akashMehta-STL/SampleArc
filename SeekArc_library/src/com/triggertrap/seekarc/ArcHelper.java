@@ -1,5 +1,7 @@
 package com.triggertrap.seekarc;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -51,6 +53,7 @@ public class ArcHelper {
     private int gaugeRangeMin = 0, gaugeRangeMax = MAX_GAUGE;
     private boolean marker1Progress = false;
 
+    private final int animationDuration = 750;
     /**
      * This values will be come from api
      */
@@ -105,19 +108,38 @@ public class ArcHelper {
         animationPos = 0;
         notchPosition = 0;
         final float gaugeProgress = createMarker(progress, originalMin, originalMax, originalRanges);
-        runnable = new Runnable() {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, (MAX_GAUGE / (originalRanges.length + 1)) + (originalRanges.length + 1));
+        valueAnimator.setDuration(animationDuration);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void run() {
-                if (animationPos <= MAX_GAUGE / (originalRanges.length + 1) + (originalRanges.length + 1)) {
-                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
-                    handler.postDelayed(runnable, animationDelay);
-                } else if (notchPosition < gaugeProgress) {
-                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
-                    handler.postDelayed(runnable, animationDelay);
-                }
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mSeekArc.setProgress((int) ((float) animation.getAnimatedValue()), false, false);
             }
-        };
-        handler.postDelayed(runnable, animationDelay);
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, gaugeProgress);
+                valueAnimator.setDuration(animationDuration);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mSeekArc.setProgress((int) ((float) animation.getAnimatedValue()), true, false);
+                    }
+                });
+                valueAnimator.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        valueAnimator.start();
         animateCenterView();
     }
 
@@ -132,26 +154,49 @@ public class ArcHelper {
         animationPos = 0;
         notchPosition = 0;
         notchPosition1 = 0;
-
-        runnable = new Runnable() {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, (MAX_GAUGE / (originalRanges.length + 1)) + (originalRanges.length + 1));
+        valueAnimator.setDuration(animationDuration);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void run() {
-                if (animationPos <= MAX_GAUGE / (originalRanges.length + 1) + (originalRanges.length + 1)) {
-                    mSeekArc.setProgress(animationPos += animationSkipItem, false, false);
-                    handler.postDelayed(runnable, animationDelay);
-                } else if (notchPosition < gaugeProgress && !marker1Progress) {
-                    mSeekArc.setProgress(notchPosition += animationSkipItem, true, false);
-                    handler.postDelayed(runnable, animationDelay);
-                } else {
-                    marker1Progress = true;
-                    if (notchPosition1 < gaugeProgress2) {
-                        mSeekArc.setProgress(notchPosition1 += animationSkipItem, false, true);
-                        handler.postDelayed(runnable, animationDelay);
-                    }
-                }
+            public void onAnimationUpdate(ValueAnimator animation) {
+                mSeekArc.setProgress((int) ((float) animation.getAnimatedValue()), false, false);
             }
-        };
-        handler.postDelayed(runnable, animationDelay);
+        });
+        valueAnimator.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {}
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                ValueAnimator valueAnimator = ValueAnimator.ofFloat(0, gaugeProgress);
+                valueAnimator.setDuration(animationDuration);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mSeekArc.setProgress((int) ((float) animation.getAnimatedValue()), true, false);
+                    }
+                });
+                valueAnimator.start();
+
+                valueAnimator = ValueAnimator.ofFloat(0, gaugeProgress2);
+                valueAnimator.setDuration(animationDuration);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        mSeekArc.setProgress((int) ((float) animation.getAnimatedValue()), false, true);
+                    }
+                });
+                valueAnimator.start();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {}
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {}
+        });
+        valueAnimator.start();
+
         animateCenterView();
     }
 
